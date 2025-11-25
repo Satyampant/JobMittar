@@ -1,13 +1,11 @@
 """Tool execution engine with configuration-driven settings."""
 
 from typing import Dict, Any
+import instructor
 from groq import Groq
 from config import get_settings
-
-import instructor
-from models.interview import InterviewQuestion
-from pydantic import BaseModel, Field
-from typing import List
+from models.interview import Interview, InterviewQuestion
+from models.skills import JobMatchAnalysis
 
 class ToolExecutionError(Exception):
     """Custom exception for tool execution failures."""
@@ -50,36 +48,12 @@ def _execute_serp_search(params: Dict[str, Any]) -> list:
             for job in data.get("jobs_results", [])[:params.get("count", 5)]]
 
 def _execute_match_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
-    """Execute Groq LLM match analysis using Instructor for structured output."""
-    import instructor
-    from groq import Groq
-    from pydantic import BaseModel, Field
-    from typing import List
-    
+    """Execute match analysis using Instructor with JobMatchAnalysis model."""
     settings = get_settings()
-    
-    # Create Instructor client
     client = instructor.from_groq(
         Groq(api_key=settings.groq_api_key), 
         mode=instructor.Mode.JSON
     )
-    
-    # Define structured response model
-    class MatchAnalysis(BaseModel):
-        """Resume-job match analysis result."""
-        match_score: float = Field(..., ge=0, le=100, description="Overall match percentage")
-        key_matches: List[str] = Field(
-            default_factory=list, 
-            description="Key matching qualifications"
-        )
-        gaps: List[str] = Field(
-            default_factory=list, 
-            description="Missing qualifications or skill gaps"
-        )
-        recommendations: List[str] = Field(
-            default_factory=list, 
-            description="Actionable recommendations to improve match"
-        )
     
     resume_skills = params['resume_data'].get('skills', [])
     job_title = params['job_data'].get('title', 'Unknown Position')
@@ -93,15 +67,16 @@ Job Description: {job_description[:1000]}
 
 Provide:
 1. An overall match score (0-100)
-2. Key matching qualifications
-3. Skill gaps or missing requirements
-4. Specific recommendations to improve the match"""
+2. Key matching qualifications (list of strings)
+3. Skill gaps or missing requirements (list of strings)
+4. Specific recommendations to improve the match (list of strings)"""
     
     try:
+        # Use the existing JobMatchAnalysis model from models.skills
         result = client.chat.completions.create(
             model=settings.api.groq_model,
             messages=[{"role": "user", "content": prompt}],
-            response_model=MatchAnalysis,
+            response_model=JobMatchAnalysis,
             max_tokens=settings.api.max_tokens,
             temperature=settings.api.temperature
         )
@@ -112,11 +87,8 @@ Provide:
         raise ToolExecutionError(f"Match analysis failed: {str(e)}")
 
 def _execute_question_generation(params: Dict[str, Any]) -> list:
-    """Execute Groq LLM question generation using Instructor for structured output."""
-    
+    """Execute question generation using Instructor with Interview model."""
     settings = get_settings()
-    
-    # Create Instructor client (same pattern as resume_extractor.py)
     client = instructor.from_groq(
         Groq(api_key=settings.groq_api_key), 
         mode=instructor.Mode.JSON
@@ -124,40 +96,46 @@ def _execute_question_generation(params: Dict[str, Any]) -> list:
     
     job = params['job_data']
     count = params.get('question_count', 10)
+    job_title = job.get('title', 'Unknown Position')
+    company_name = job.get('company', 'Unknown Company')
     
-    # Define response model for list of questions
-    class InterviewQuestionsList(BaseModel):
-        """Container for multiple interview questions."""
-        questions: List[InterviewQuestion] = Field(
-            ..., 
-            min_length=1, 
-            description="List of interview questions"
-        )
-    
-    # Construct prompt
-    prompt = f"""Generate {count} high-quality interview questions for the position of {job.get('title', 'Unknown Position')} at {job.get('company', 'Unknown Company')}.
+    prompt = f"""Generate an interview preparation session with {count} high-quality questions.
 
+Job Title: {job_title}
+Company: {company_name}
 Job Description: {job.get('description', 'No description available')[:500]}
 
-For each question, provide:
-- The question text
-- Category (Technical, Behavioral, Situational, or General)
-- Difficulty level (Easy, Medium, or Hard)
-- A suggested answer approach
-- Key points to cover in the answer"""
+Create an Interview object with:
+- job_title: "{job_title}"
+- company_name: "{company_name}"
+- questions: List of {count} InterviewQuestion objects, each with:
+  * question: The interview question text (at least 10 characters)
+  * category: One of (Technical, Behavioral, Situational, General)
+  * difficulty: One of (Easy, Medium, Hard)
+  * suggested_answer: A suggested approach or answer
+  * key_points: List of key points to cover"""
     
     try:
-        # Use Instructor to get structured output
-        result = client.chat.completions.create(
+        # Use the Interview model which contains List[InterviewQuestion]
+        result: Interview = client.chat.completions.create(
             model=settings.api.groq_model,
             messages=[{"role": "user", "content": prompt}],
-            response_model=InterviewQuestionsList,
+            response_model=Interview,
             max_tokens=settings.api.max_tokens,
             temperature=settings.api.temperature
         )
         
-        # Convert Pydantic models to dicts for compatibility with UI
-        return [q.model_dump() for q in result.questions]
+        # Return list of questions as dicts for compatibility with app.py
+        return [
+            {
+                'question': q.question,
+                'category': q.category,
+                'difficulty': q.difficulty,
+                'suggested_answer': q.suggested_answer,
+                'tips': q.tips  # Uses the @property we added
+            }
+            for q in result.questions
+        ]
         
     except Exception as e:
         raise ToolExecutionError(f"Failed to generate interview questions: {str(e)}")
