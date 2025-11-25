@@ -51,6 +51,53 @@ prompts:
     
     Ensure accuracy, completeness, and proper formatting.
 
+  job_match_analysis: |
+    Conduct a thorough, professional analysis of resume-job compatibility.
+    
+    Resume Skills: {resume_skills}
+    Resume Experience: {resume_experience}
+    Job Title: {job_title}
+    Job Description: {job_description}
+    Job Requirements: {job_requirements}
+    
+    Provide comprehensive structured analysis:
+    1. match_score: Precise compatibility score (0-100) with rationale
+    2. key_matches: Detailed list of matching qualifications, skills, and experiences
+    3. gaps: Specific missing requirements, certifications, or experience areas
+    4. recommendations: Concrete, prioritized actions to strengthen candidacy
+    
+    Be thorough, honest, and professionally constructive. Consider both hard skills and transferable experiences.
+
+  interview_questions_generation: |
+    As a senior interview coach, generate {question_count} exceptional, role-specific interview questions.
+    
+    Position Details:
+    - Job Title: {job_title}
+    - Company: {company_name}
+    - Job Description: {job_description}
+    - Required Skills: {required_skills}
+    
+    Create an Interview preparation session with:
+    - job_title: "{job_title}"
+    - company_name: "{company_name}"
+    - questions: {question_count} strategically designed questions
+    
+    For each InterviewQuestion, provide:
+    - question: Thoughtful, specific question that reveals candidate capabilities (15+ characters)
+    - category: Technical, Behavioral, Situational, or General (based on question nature)
+    - difficulty: Easy, Medium, or Hard (calibrated to role seniority)
+    - suggested_answer: Comprehensive answer framework with structure (STAR method for behavioral)
+    - key_points: 4-6 critical elements to include in a strong answer
+    
+    Question Design Principles:
+    - Progress from warm-up questions to technical deep-dives
+    - Include real-world scenarios and problem-solving challenges
+    - Test both domain expertise and cultural fit
+    - Incorporate company-specific context when possible
+    - Allow candidate to showcase unique experiences and achievements
+    - Cover edge cases and advanced topics for senior roles
+    - Balance technical depth with communication and collaboration assessment
+
 api:
   groq_model: llama-3.3-70b-versatile
   serp_engine: google_jobs

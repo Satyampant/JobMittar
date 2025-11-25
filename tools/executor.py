@@ -48,31 +48,30 @@ def _execute_serp_search(params: Dict[str, Any]) -> list:
             for job in data.get("jobs_results", [])[:params.get("count", 5)]]
 
 def _execute_match_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
-    """Execute match analysis using Instructor with JobMatchAnalysis model."""
+    """Execute match analysis using config prompts and Instructor."""
     settings = get_settings()
     client = instructor.from_groq(
         Groq(api_key=settings.groq_api_key), 
         mode=instructor.Mode.JSON
     )
     
+    # Extract data
     resume_skills = params['resume_data'].get('skills', [])
+    resume_experience = params['resume_data'].get('experience', [])
     job_title = params['job_data'].get('title', 'Unknown Position')
     job_description = params['job_data'].get('description', 'No description')
+    job_requirements = params['job_data'].get('requirements', 'Not specified')
     
-    prompt = f"""Analyze the match between this resume and job posting.
-
-Resume Skills: {', '.join(resume_skills)}
-Job Title: {job_title}
-Job Description: {job_description[:1000]}
-
-Provide:
-1. An overall match score (0-100)
-2. Key matching qualifications (list of strings)
-3. Skill gaps or missing requirements (list of strings)
-4. Specific recommendations to improve the match (list of strings)"""
+    # Format prompt from config with variables
+    prompt = settings.prompts.job_match_analysis.format(
+        resume_skills=', '.join(resume_skills) if resume_skills else 'None listed',
+        resume_experience='; '.join(resume_experience[:3]) if resume_experience else 'None listed',
+        job_title=job_title,
+        job_description=job_description[:1000],
+        job_requirements=str(job_requirements)[:500]
+    )
     
     try:
-        # Use the existing JobMatchAnalysis model from models.skills
         result = client.chat.completions.create(
             model=settings.api.groq_model,
             messages=[{"role": "user", "content": prompt}],
@@ -87,7 +86,7 @@ Provide:
         raise ToolExecutionError(f"Match analysis failed: {str(e)}")
 
 def _execute_question_generation(params: Dict[str, Any]) -> list:
-    """Execute question generation using Instructor with Interview model."""
+    """Execute question generation using config prompts and Instructor."""
     settings = get_settings()
     client = instructor.from_groq(
         Groq(api_key=settings.groq_api_key), 
@@ -98,25 +97,25 @@ def _execute_question_generation(params: Dict[str, Any]) -> list:
     count = params.get('question_count', 10)
     job_title = job.get('title', 'Unknown Position')
     company_name = job.get('company', 'Unknown Company')
+    job_description = job.get('description', 'No description available')
     
-    prompt = f"""Generate an interview preparation session with {count} high-quality questions.
-
-Job Title: {job_title}
-Company: {company_name}
-Job Description: {job.get('description', 'No description available')[:500]}
-
-Create an Interview object with:
-- job_title: "{job_title}"
-- company_name: "{company_name}"
-- questions: List of {count} InterviewQuestion objects, each with:
-  * question: The interview question text (at least 10 characters)
-  * category: One of (Technical, Behavioral, Situational, General)
-  * difficulty: One of (Easy, Medium, Hard)
-  * suggested_answer: A suggested approach or answer
-  * key_points: List of key points to cover"""
+    # Get required skills if available
+    required_skills = 'Not specified'
+    if isinstance(job.get('requirements'), dict):
+        skills = job['requirements'].get('required_skills', [])
+        if skills:
+            required_skills = ', '.join(skills)
+    
+    # Format prompt from config with variables
+    prompt = settings.prompts.interview_questions_generation.format(
+        question_count=count,
+        job_title=job_title,
+        company_name=company_name,
+        job_description=job_description[:800],
+        required_skills=required_skills
+    )
     
     try:
-        # Use the Interview model which contains List[InterviewQuestion]
         result: Interview = client.chat.completions.create(
             model=settings.api.groq_model,
             messages=[{"role": "user", "content": prompt}],
@@ -132,7 +131,7 @@ Create an Interview object with:
                 'category': q.category,
                 'difficulty': q.difficulty,
                 'suggested_answer': q.suggested_answer,
-                'tips': q.tips  # Uses the @property we added
+                'tips': q.tips
             }
             for q in result.questions
         ]

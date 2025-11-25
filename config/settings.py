@@ -11,10 +11,15 @@ from pydantic_settings import BaseSettings
 
 class PromptConfig(BaseModel):
     """Prompt configuration with validation."""
+    # Agent prompts (for decision-making)
     job_search_agent: str
     match_analysis_agent: str
     interview_prep_agent: str
+    
+    # Execution prompts (for actual LLM calls)
     resume_extraction: str
+    job_match_analysis: str
+    interview_questions_generation: str
 
 
 class APIConfig(BaseModel):
