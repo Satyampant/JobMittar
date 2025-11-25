@@ -1,0 +1,44 @@
+# Core dependencies for Pydantic models
+pydantic
+pydantic[email]
+
+# Instructor for LLM output parsing
+instructor
+groq
+
+# Document parsing (Step 2)
+pdfplumber
+python-docx
+
+groq
+requests
+
+langchain
+langgraph
+
+
+# Step 5: Configuration Management System Requirements
+
+pydantic-settings
+pyyaml
+python-dotenv
+
+
+# Core Streamlit UI dependencies
+streamlit
+pandas
+
+# Additional UI utilities
+PyPDF2
+
+# LangGraph (workflow engine)
+langchain-core
+
+# Step 3: LangGraph Workflow Dependencies
+langgraph-checkpoint
+
+# For state persistence
+aiosqlite
+
+# Async support
+asyncio
