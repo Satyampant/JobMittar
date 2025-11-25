@@ -7,11 +7,33 @@ from pydantic import BaseModel, Field, field_validator
 
 class InterviewQuestion(BaseModel):
     """Individual interview question."""
-    question: str = Field(..., min_length=10)
-    category: str = Field(default="General", pattern="^(Technical|Behavioral|Situational|General)$")
-    difficulty: str = Field(default="Medium", pattern="^(Easy|Medium|Hard)$")
-    suggested_answer: Optional[str] = None
-    key_points: List[str] = Field(default_factory=list)
+    question: str = Field(..., min_length=10, description="The interview question text")
+    category: str = Field(
+        default="General", 
+        pattern="^(Technical|Behavioral|Situational|General)$",
+        description="Question category"
+    )
+    difficulty: str = Field(
+        default="Medium", 
+        pattern="^(Easy|Medium|Hard)$",
+        description="Question difficulty level"
+    )
+    suggested_answer: Optional[str] = Field(
+        None, 
+        description="Suggested approach or answer to the question"
+    )
+    key_points: List[str] = Field(
+        default_factory=list,
+        description="Key points to cover in the answer"
+    )
+    
+    # Add this for backward compatibility with UI
+    @property
+    def tips(self) -> str:
+        """Generate tips from key_points for UI compatibility."""
+        if self.key_points:
+            return "\n".join(f"• {point}" for point in self.key_points)
+        return "Focus on providing specific examples and demonstrating your problem-solving approach."
 
 
 class InterviewResponse(BaseModel):
