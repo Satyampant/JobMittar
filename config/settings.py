@@ -15,12 +15,16 @@ class PromptConfig(BaseModel):
     job_search_agent: str
     match_analysis_agent: str
     interview_prep_agent: str
+    interview_agent: str  # NEW
     
     # Execution prompts (for actual LLM calls)
     resume_extraction: str
     job_match_analysis: str
     interview_questions_generation: str
-
+    
+    # Interview interaction prompts
+    interview_audio_generation: str
+    interview_feedback_generation: str
 
 class APIConfig(BaseModel):
     """API configuration with validation."""

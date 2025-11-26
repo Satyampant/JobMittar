@@ -2,12 +2,20 @@
 
 from .resume import Resume, Education, WorkExperience, Skill
 from .job import Job, JobRequirements, Company
-from .interview import Interview, InterviewQuestion, InterviewResponse
+from .interview import (
+    Interview, 
+    InterviewQuestion, 
+    InterviewResponse,
+    InterviewQuestionResponse,
+    InterviewFeedback,
+    InterviewSessionState
+)
 from .skills import SkillCategory, SkillMatch, SkillGap
 
 __all__ = [
     "Resume", "Education", "WorkExperience", "Skill",
     "Job", "JobRequirements", "Company",
     "Interview", "InterviewQuestion", "InterviewResponse",
+    "InterviewQuestionResponse", "InterviewFeedback", "InterviewSessionState",
     "SkillCategory", "SkillMatch", "SkillGap"
 ]

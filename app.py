@@ -17,7 +17,7 @@ from parsers.resume_extractor import extract_resume
 from tools.executor import execute_tool
 from models.resume import Resume
 from models.job import Job
-from models.interview import Interview, InterviewQuestion
+from models.interview import Interview, InterviewQuestion, InterviewSessionState
 from config import get_settings
 
 # Import UI utilities

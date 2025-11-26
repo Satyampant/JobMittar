@@ -7,7 +7,7 @@ from typing import Optional, Dict, Any
 from streamlit_mic_recorder import mic_recorder
 import time
 
-from models.interview_session import InterviewSessionState, InterviewQuestionResponse
+from models.interview import InterviewSessionState, InterviewQuestionResponse, InterviewFeedback
 from tools.interview_service import InterviewService
 from ui_utils import COLORS
 

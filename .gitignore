@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+tests/
+saved_jobs/
+saved_interviews/

@@ -54,9 +54,54 @@ generate_questions_tool = {
     }
 }
 
+# Interview Audio Generation Tool
+generate_audio_tool = {
+    "name": "generate_question_audio",
+    "description": "Generate text-to-speech audio for an interview question using Groq TTS. Returns audio bytes in MP3 format.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "question_text": {"type": "string", "description": "The interview question to convert to speech"},
+            "question_type": {"type": "string", "enum": ["Technical", "Behavioral", "Situational", "General"], "default": "General", "description": "Type of interview question"}
+        },
+        "required": ["question_text"]
+    }
+}
+
+# Audio Transcription Tool
+transcribe_audio_tool = {
+    "name": "transcribe_candidate_response",
+    "description": "Transcribe candidate's audio response to text using Deepgram. Accepts audio bytes and returns transcribed text.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "audio_bytes": {"type": "string", "description": "Base64-encoded audio data in MP3/WAV format"},
+        },
+        "required": ["audio_bytes"]
+    }
+}
+
+# Interview Feedback Generation Tool
+generate_feedback_tool = {
+    "name": "generate_interview_feedback",
+    "description": "Generate AI-powered feedback for a candidate's interview response using Groq LLM. Returns structured feedback with scores and suggestions.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "question": {"type": "string", "description": "The interview question that was asked"},
+            "question_type": {"type": "string", "enum": ["Technical", "Behavioral", "Situational", "General"], "description": "Type of interview question"},
+            "candidate_response": {"type": "string", "description": "Candidate's transcribed response text"}
+        },
+        "required": ["question", "question_type", "candidate_response"]
+    }
+}
+
 # Tool Registry for dynamic lookup
 TOOL_REGISTRY = {
     "search_jobs": search_jobs_tool,
     "analyze_job_match": analyze_match_tool,
-    "generate_interview_questions": generate_questions_tool
+    "generate_interview_questions": generate_questions_tool,
+    "generate_question_audio": generate_audio_tool,
+    "transcribe_candidate_response": transcribe_audio_tool,
+    "generate_interview_feedback": generate_feedback_tool
 }

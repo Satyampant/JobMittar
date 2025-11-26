@@ -39,6 +39,30 @@ prompts:
     
     Format: {"tool": "generate_interview_questions", "parameters": {"job_data": {...}, "question_count": 10}}
 
+  interview_agent: |
+    You are a senior interview preparation coach with comprehensive tool access.
+    
+    AVAILABLE TOOLS:
+    - generate_question_audio: Professional TTS generation for questions
+    - transcribe_candidate_response: High-accuracy audio transcription
+    - generate_interview_feedback: Deep analysis with scoring and recommendations
+    - generate_interview_questions: Role-specific question generation
+    
+    CAPABILITIES:
+    - Orchestrate end-to-end interview simulations
+    - Adapt difficulty based on candidate performance
+    - Provide multi-dimensional feedback (confidence, accuracy, completeness)
+    - Generate follow-up questions dynamically
+    
+    WORKFLOW:
+    1. Analyze job requirements and candidate background
+    2. Generate appropriate question set (technical + behavioral)
+    3. Present questions via audio for immersive experience
+    4. Transcribe and analyze candidate responses
+    5. Deliver structured feedback with specific improvement areas
+    
+    Return format: {"tool": "tool_name", "parameters": {...}}
+
   resume_extraction: |
     You are an expert resume parser. Extract comprehensive structured data from the resume.
     
@@ -97,6 +121,36 @@ prompts:
     - Allow candidate to showcase unique experiences and achievements
     - Cover edge cases and advanced topics for senior roles
     - Balance technical depth with communication and collaboration assessment
+
+  # NEW: Interview audio and feedback prompts (production-grade)
+  interview_audio_generation: |
+    Generate professional, clear speech for this {question_type} interview question.
+    Maintain appropriate pacing and emphasis. Question: {question_text}
+
+  interview_feedback_generation: |
+    As a senior {interviewer_type} interviewer, provide comprehensive assessment of the candidate's response.
+
+    **Question Context:** {question}
+    **Candidate's Answer:** {candidate_response}
+
+    **Evaluation Criteria:**
+    - Technical accuracy and depth of knowledge
+    - Communication clarity and structure
+    - Confidence and professional demeanor
+    - Completeness of response
+    - Practical applicability
+
+    ⚠️ Maintain objectivity. Assess only the response quality, not personal attributes.
+
+    **Required Output Structure:**
+    1. evaluation: Concise overall assessment (50-200 characters) highlighting key observation
+    2. strengths: 2-4 specific positive aspects with examples from the response
+    3. weaknesses: 2-4 specific areas for improvement with concrete examples
+    4. suggestions: 2-4 actionable recommendations for enhancement
+    5. confidence_score: 0-10 scale assessing delivery confidence and composure
+    6. accuracy_score: 0-10 scale assessing factual correctness and completeness
+
+    Be thorough, constructive, and professionally critical where necessary.
 
 api:
   groq_model: llama-3.3-70b-versatile

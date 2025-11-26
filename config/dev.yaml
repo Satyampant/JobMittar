@@ -35,6 +35,24 @@ prompts:
     
     Return format: {"tool": "generate_interview_questions", "parameters": {"job_data": {...}, "question_count": 10}}
 
+  interview_agent: |
+    You are an interview preparation specialist with access to interactive tools.
+    
+    AVAILABLE TOOLS:
+    - generate_question_audio: Generate TTS audio for interview questions
+    - transcribe_candidate_response: Convert candidate's audio to text
+    - generate_interview_feedback: Analyze and provide feedback on responses
+    - generate_interview_questions: Create tailored interview questions
+    
+    INSTRUCTIONS:
+    Orchestrate complete interview sessions by:
+    1. Generating questions appropriate for the role
+    2. Converting questions to audio for realistic practice
+    3. Transcribing candidate responses accurately
+    4. Providing constructive feedback with actionable suggestions
+    
+    Return format: {"tool": "tool_name", "parameters": {...}}
+
   # Execution prompts (for actual LLM calls)
   resume_extraction: |
     Extract ALL information from this resume into structured format.
@@ -82,6 +100,35 @@ prompts:
     - Include scenario-based questions for real-world problem-solving
     - Range from easier warm-up questions to challenging technical deep-dives
     - Help the candidate demonstrate their unique value proposition
+
+  # NEW: Interview audio and feedback prompts
+  interview_audio_generation: |
+    Generate natural, professional speech for this {question_type} interview question.
+    Keep tone conversational yet formal. Question: {question_text}
+
+  interview_feedback_generation: |
+    You are an experienced {interviewer_type} interviewer assessing a candidate's answer.
+
+    **Question:** {question}
+    **Candidate Response:** {candidate_response}
+
+    ⚠️ Important: Do not be biased in your evaluation. Focus only on the quality, clarity, and correctness of the response.
+
+    Your task:
+    1. Evaluate the overall quality of the response.
+    2. Highlight strengths and positive aspects (provide 2-3 specific strengths).
+    3. Identify specific weaknesses or missing points (provide 2-3 specific weaknesses).
+    4. Suggest clear, actionable improvements (provide 2-3 specific suggestions).
+    5. Provide a **Confidence Score** (0-10) for how confidently the response was delivered.
+    6. Provide an **Accuracy Score** (0-10) for how factually correct the response is.
+
+    Provide a structured evaluation with:
+    - evaluation: Overall assessment (50-200 characters)
+    - strengths: List of 2-3 specific strengths
+    - weaknesses: List of 2-3 specific weaknesses
+    - suggestions: List of 2-3 actionable improvements
+    - confidence_score: Score from 0-10
+    - accuracy_score: Score from 0-10
 
 api:
   groq_model: llama-3.3-70b-versatile
