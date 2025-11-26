@@ -42,3 +42,6 @@ aiosqlite
 
 # Async support
 asyncio
+
+streamlit-mic-recorder
+deepgram-sdk

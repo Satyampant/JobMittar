@@ -468,6 +468,7 @@ with tabs[1]:
                         st.rerun()
 
 # Tab 3: Interview Preparation (NEW backend integration)
+# Tab 3: Interview Preparation (UPDATED with Interactive Interview)
 with tabs[2]:
     st.header("Interview Preparation")
 
@@ -482,92 +483,151 @@ with tabs[2]:
         </div>
         """, unsafe_allow_html=True)
 
-        col1, col2 = st.columns(2)
+        # Check if interview session is active
+        if st.session_state.get('interview_session') and st.session_state.interview_session.is_active:
+            # Render active interview session
+            from components.interview_ui import InterviewUI
+            
+            interview_ui = InterviewUI()
+            interview_ui.render_interview_header()
+            interview_ui.render_current_question()
+            interview_ui.render_response_recorder()
+            interview_ui.render_navigation_buttons()
+        else:
+            # Setup new interview
+            col1, col2 = st.columns(2)
 
-        with col1:
-            interview_type = st.radio(
-                "Select interview preparation type:",
-                ["Technical Interview", "Behavioral Interview", "Coding Interview"],
-                key="interview_type"
-            )
+            with col1:
+                interview_type = st.radio(
+                    "Select interview preparation type:",
+                    ["Technical Interview", "Behavioral Interview", "Coding Interview"],
+                    key="interview_type"
+                )
 
-            num_questions = st.slider("Number of questions:", 5, 20, 10, key="num_interview_questions")
+                num_questions = st.slider("Number of questions:", 5, 20, 10, key="num_interview_questions")
 
-            generate_btn = st.button("Generate Interview Questions", key="generate_interview_btn")
+                # Two modes: Generate and Review OR Start Live Interview
+                mode_col1, mode_col2 = st.columns(2)
+                
+                with mode_col1:
+                    generate_btn = st.button("📝 Generate Questions", key="generate_interview_btn")
+                
+                with mode_col2:
+                    start_live_btn = st.button("🎙️ Start Live Interview", key="start_live_interview_btn")
 
-        with col2:
-            st.subheader("Quick Tips")
-            st.markdown(f"""
-            <div style="background-color: {COLORS["primary"]}; color: white; padding: 15px; 
-            border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-            <h4 style="margin-top: 0; font-weight: 600; margin-bottom: 10px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">Interview Tips:</h4>
-            <ul style="margin-bottom: 0; padding-left: 20px;">
-            <li>Research the company thoroughly</li>
-            <li>Prepare specific examples using STAR method</li>
-            <li>Practice your technical skills</li>
-            <li>Prepare questions for the interviewer</li>
-            </ul>
-            </div>
-            """, unsafe_allow_html=True)
+            with col2:
+                st.subheader("Quick Tips")
+                st.markdown(f"""
+                <div style="background-color: {COLORS["primary"]}; color: white; padding: 15px; 
+                border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <h4 style="margin-top: 0; font-weight: 600; margin-bottom: 10px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">Interview Tips:</h4>
+                <ul style="margin-bottom: 0; padding-left: 20px;">
+                <li>Research the company thoroughly</li>
+                <li>Prepare specific examples using STAR method</li>
+                <li>Practice your technical skills</li>
+                <li>Prepare questions for the interviewer</li>
+                <li><strong>NEW:</strong> Try the live interview mode for realistic practice!</li>
+                </ul>
+                </div>
+                """, unsafe_allow_html=True)
 
-        if generate_btn:
-            with st.spinner("Generating interview questions..."):
-                try:
-                    # Use NEW backend tool executor
-                    result = execute_tool("generate_interview_questions", {
-                        "job_data": selected_job,
-                        "resume_data": st.session_state.resume_data,
-                        "question_count": num_questions
-                    })
+            # Generate questions for review
+            if generate_btn:
+                with st.spinner("Generating interview questions..."):
+                    try:
+                        result = execute_tool("generate_interview_questions", {
+                            "job_data": selected_job,
+                            "resume_data": st.session_state.resume_data,
+                            "question_count": num_questions
+                        })
 
-                    if result["success"]:
-                        questions = result["result"]
-                        st.session_state.interview_questions = {
-                            'job': selected_job,
-                            'type': interview_type,
-                            'questions': questions
-                        }
-                        st.rerun()
-                    else:
-                        st.error(f"Failed to generate questions: {result.get('error', 'Unknown error')}")
+                        if result["success"]:
+                            questions = result["result"]
+                            st.session_state.interview_questions = {
+                                'job': selected_job,
+                                'type': interview_type,
+                                'questions': questions
+                            }
+                            st.rerun()
+                        else:
+                            st.error(f"Failed to generate questions: {result.get('error', 'Unknown error')}")
 
-                except Exception as e:
-                    st.error(f"Error generating questions: {str(e)}")
+                    except Exception as e:
+                        st.error(f"Error generating questions: {str(e)}")
+            
+            # Start live interview
+            if start_live_btn:
+                with st.spinner("Preparing your live interview..."):
+                    try:
+                        # Generate questions if not already generated
+                        if not st.session_state.get('interview_questions'):
+                            result = execute_tool("generate_interview_questions", {
+                                "job_data": selected_job,
+                                "resume_data": st.session_state.resume_data,
+                                "question_count": num_questions
+                            })
 
-        # Display questions
-        if st.session_state.interview_questions:
-            interview_data = st.session_state.interview_questions
+                            if result["success"]:
+                                questions = result["result"]
+                            else:
+                                st.error("Failed to generate questions for live interview")
+                                questions = None
+                        else:
+                            questions = st.session_state.interview_questions['questions']
+                        
+                        if questions:
+                            # Initialize live interview session
+                            from components.interview_ui import InterviewUI
+                            
+                            interview_ui = InterviewUI()
+                            interview_ui.start_interview_session(
+                                job_data=selected_job,
+                                questions=questions,
+                                interview_type=interview_type
+                            )
+                            st.success("Live interview session started!")
+                            st.rerun()
+                    
+                    except Exception as e:
+                        st.error(f"Error starting live interview: {str(e)}")
+                        st.info("Make sure you have DEEPGRAM_API_KEY set in your .env file")
 
-            st.markdown(f"""
-            <div style="background-color: {COLORS["secondary"]}; color: white; 
-            padding: 10px 15px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-            <h3 style="margin: 0; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{interview_data['type']} Questions</h3>
-            </div>
-            """, unsafe_allow_html=True)
+            # Display generated questions for review (non-live mode)
+            if st.session_state.get('interview_questions') and not st.session_state.get('interview_session'):
+                interview_data = st.session_state.interview_questions
 
-            for i, question in enumerate(interview_data['questions'], 1):
-                question_text = question.get('question', 'Question not available')
-                with st.expander(f"Question {i}: {question_text[:80]}...", expanded=i==1):
-                    st.markdown(f"""
-                    <div style="background-color: {COLORS["primary"]}; color: white; 
-                    padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <span style="text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">{question_text}</span>
-                    </div>
-                    """, unsafe_allow_html=True)
+                st.markdown(f"""
+                <div style="background-color: {COLORS["secondary"]}; color: white; 
+                padding: 10px 15px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                <h3 style="margin: 0; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{interview_data['type']} Questions (Review Mode)</h3>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.info("💡 These questions are in review mode. Click 'Start Live Interview' above to practice with voice recording and AI feedback!")
 
-                    if question.get('suggested_answer'):
-                        st.markdown("**Suggested Answer:**")
-                        st.write(question['suggested_answer'])
+                for i, question in enumerate(interview_data['questions'], 1):
+                    question_text = question.get('question', 'Question not available')
+                    with st.expander(f"Question {i}: {question_text[:80]}...", expanded=i==1):
+                        st.markdown(f"""
+                        <div style="background-color: {COLORS["primary"]}; color: white; 
+                        padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <span style="text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">{question_text}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
 
-                    if question.get('tips'):
-                        st.markdown("**Tips:**")
-                        st.write(question['tips'])
+                        if question.get('suggested_answer'):
+                            st.markdown("**Suggested Answer:**")
+                            st.write(question['suggested_answer'])
 
-                    st.text_area("Your Notes:", key=f"note_{i}", height=100)
+                        if question.get('tips'):
+                            st.markdown("**Tips:**")
+                            st.write(question['tips'])
+
+                        st.text_area("Your Notes:", key=f"note_{i}", height=100)
 
     else:
         st.info("Please select a job from the Job Search tab to prepare for an interview.")
-
+        
 # Tab 4: Saved Jobs (maintains legacy design)
 with tabs[3]:
     st.header("Saved Jobs")

@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     """Main settings with environment variable support."""
     groq_api_key: str = Field(alias="GROQ_API_KEY")
     serpapi_api_key: str = Field(alias="SERPAPI_API_KEY")
+    deepgram_api_key: str = Field(alias="DEEPGRAM_API_KEY")
     environment: str = Field(default="dev", pattern="^(dev|prod)$")
     prompts: PromptConfig
     api: APIConfig
@@ -51,4 +52,5 @@ def get_settings() -> Settings:
     with open(config_path) as f:
         config_data = yaml.safe_load(f)
     return Settings(**config_data, groq_api_key=os.getenv("GROQ_API_KEY", ""), 
-                    serpapi_api_key=os.getenv("SERPAPI_API_KEY", ""))
+                    serpapi_api_key=os.getenv("SERPAPI_API_KEY", ""),
+                    deepgram_api_key=os.getenv("DEEPGRAM_API_KEY", ""))

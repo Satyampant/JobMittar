@@ -1,7 +1,7 @@
 [project]
 name = "jobde-ai-job-search-assistant"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "AI-powered job search assistant with interactive interview preparation"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -11,6 +11,7 @@ dependencies = [
     "instructor>=1.13.0",
     "langchain>=1.1.0",
     "langchain-core>=1.1.0",
+    "langchain-groq>=0.2.0",
     "langgraph>=1.0.3",
     "langgraph-checkpoint>=3.0.1",
     "pandas>=2.3.3",
@@ -23,4 +24,9 @@ dependencies = [
     "pyyaml>=6.0.3",
     "requests>=2.32.5",
     "streamlit>=1.51.0",
+    "plotly>=5.18.0",
+    
+    # NEW: Interactive interview dependencies
+    "streamlit-mic-recorder>=0.0.8",
+    "deepgram-sdk>=3.3.0",
 ]
