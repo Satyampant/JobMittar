@@ -53,7 +53,7 @@ def get_settings() -> Settings:
     """Load and cache settings from YAML + environment."""
     env = os.getenv("ENVIRONMENT", "dev")
     config_path = Path(__file__).parent / f"{env}.yaml"
-    with open(config_path) as f:
+    with open(config_path, encoding='utf-8') as f:
         config_data = yaml.safe_load(f)
     return Settings(**config_data, groq_api_key=os.getenv("GROQ_API_KEY", ""), 
                     serpapi_api_key=os.getenv("SERPAPI_API_KEY", ""),
