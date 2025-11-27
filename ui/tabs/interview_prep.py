@@ -179,7 +179,7 @@ def _render_review_mode_questions():
 
     for i, question in enumerate(interview_data['questions'], 1):
         question_text = question.get('question', 'Question not available')
-        with st.expander(f"Question {i}: {question_text[:80]}...", expanded=i==1):
+        with st.expander(f"❓ Question {i}: {question_text[:80]}...", expanded=i==1):
             st.markdown(f"""
             <div style="background-color: {COLORS["primary"]}; color: white; 
             padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">

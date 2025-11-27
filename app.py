@@ -26,7 +26,7 @@ from ui_utils import (
     display_resume_analysis_summary,
     display_extracted_information,
     format_job_description,
-    display_matching_skills,
+    # display_matching_skills,
     apply_styling,
     COLORS
 )

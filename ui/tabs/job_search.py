@@ -117,7 +117,7 @@ def _render_custom_search():
             location = st.selectbox("Location:", LOCATIONS, key="locations")
 
         # Advanced filters
-        with st.expander("Advanced Filters", expanded=False):
+        with st.expander("⚙️ Advanced Filters", expanded=False):
             selected_platforms = st.multiselect(
                 "Job Platforms:",
                 options=["LinkedIn", "Indeed", "Glassdoor", "ZipRecruiter", "Monster"],
@@ -218,7 +218,7 @@ def _render_job_details():
 
 def _render_match_analysis(job):
     """Render resume-job match analysis."""
-    with st.expander("Resume Match Analysis", expanded=True):
+    with st.expander("📊 Resume Match Analysis", expanded=True):
         with st.spinner("Analyzing match..."):
             try:
                 result = execute_tool("analyze_job_match", {

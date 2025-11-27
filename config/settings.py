@@ -24,7 +24,6 @@ class PromptConfig(BaseModel):
     interview_questions_generation: str
     
     # Interview interaction prompts
-    interview_audio_generation: str
     interview_feedback_generation: str
 
 class APIConfig(BaseModel):

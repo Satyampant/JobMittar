@@ -142,11 +142,6 @@ prompts:
     - Cover edge cases and advanced topics for senior roles
     - Balance technical depth with communication and collaboration assessment
 
-# NOTE: interview_audio_generation is currently unused - TTS directly converts question text
-  interview_audio_generation: |
-    Generate professional, clear speech for this {question_type} interview question.
-    Maintain appropriate pacing and emphasis. Question: {question_text}
-
   interview_feedback_generation: |
     As a senior {interviewer_type} interviewer, provide comprehensive assessment of the candidate's response.
 

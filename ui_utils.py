@@ -355,33 +355,33 @@ def format_job_description(description):
     return formatted_description
 
 
-def display_matching_skills(skills, job_description):
-    """Display matching skills (exact visual match from legacy)."""
-    if not skills or not job_description:
-        st.markdown(
-            """<div style="background-color: #455A64; color: white; padding: 12px; 
-            border-radius: 6px;">No matching skills could be determined.</div>""", 
-            unsafe_allow_html=True
-        )
-        return
+# def display_matching_skills(skills, job_description):
+#     """Display matching skills (exact visual match from legacy)."""
+#     if not skills or not job_description:
+#         st.markdown(
+#             """<div style="background-color: #455A64; color: white; padding: 12px; 
+#             border-radius: 6px;">No matching skills could be determined.</div>""", 
+#             unsafe_allow_html=True
+#         )
+#         return
 
-    job_desc = job_description.lower()
-    matching_skills = [skill for skill in skills if skill.lower() in job_desc]
+#     job_desc = job_description.lower()
+#     matching_skills = [skill for skill in skills if skill.lower() in job_desc]
 
-    if matching_skills:
-        st.markdown("""<h4 style="color: #1A237E; margin-bottom: 10px;">Skills Matching Job Description</h4>""", unsafe_allow_html=True)
-        skills_html = """<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">"""
+#     if matching_skills:
+#         st.markdown("""<h4 style="color: #1A237E; margin-bottom: 10px;">Skills Matching Job Description</h4>""", unsafe_allow_html=True)
+#         skills_html = """<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">"""
 
-        for skill in matching_skills[:5]:
-            skills_html += f"""<div style="background-color: #01579B; color: white; 
-            padding: 8px 12px; border-radius: 20px; font-weight: 500; margin-bottom: 8px;">
-            ✅ {skill}</div>"""
+#         for skill in matching_skills[:5]:
+#             skills_html += f"""<div style="background-color: #01579B; color: white; 
+#             padding: 8px 12px; border-radius: 20px; font-weight: 500; margin-bottom: 8px;">
+#             ✅ {skill}</div>"""
 
-        skills_html += "</div>"
-        st.markdown(skills_html, unsafe_allow_html=True)
-    else:
-        st.markdown(
-            """<div style="background-color: #455A64; color: white; padding: 12px; 
-            border-radius: 6px;">No matching skills detected.</div>""", 
-            unsafe_allow_html=True
-        )
+#         skills_html += "</div>"
+#         st.markdown(skills_html, unsafe_allow_html=True)
+#     else:
+#         st.markdown(
+#             """<div style="background-color: #455A64; color: white; padding: 12px; 
+#             border-radius: 6px;">No matching skills detected.</div>""", 
+#             unsafe_allow_html=True
+#         )

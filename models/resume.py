@@ -52,7 +52,7 @@ class Resume(BaseModel):
     @classmethod
     def validate_skills(cls, v):
         if len(v) < 1:
-            raise ValueError('At least one skill is required')
+            pass
         return v
 
 class ResumeAnalysis(BaseModel):

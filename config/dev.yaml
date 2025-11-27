@@ -126,11 +126,6 @@ prompts:
     - Range from easier warm-up questions to challenging technical deep-dives
     - Help the candidate demonstrate their unique value proposition
 
-# NOTE: interview_audio_generation is currently unused - TTS directly converts question text
-  interview_audio_generation: |
-    Generate natural, professional speech for this {question_type} interview question.
-    Keep tone conversational yet formal. Question: {question_text}
-
   interview_feedback_generation: |
     You are an experienced {interviewer_type} interviewer assessing a candidate's answer.
 
