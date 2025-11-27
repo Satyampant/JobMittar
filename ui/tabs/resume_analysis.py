@@ -3,6 +3,7 @@
 import streamlit as st
 import tempfile
 import os
+from typing import Dict, Any
 
 from parsers.file_reader import read_resume_file
 from parsers.resume_extractor import extract_resume
@@ -110,35 +111,35 @@ def _process_resume_file(resume_file):
             st.info("If the error persists, try uploading a different file format.")
 
 
-def _generate_resume_analysis(resume: Resume) -> str:
-    """Generate analysis text from resume data."""
-    return f"""
-OVERALL ASSESSMENT
-
-Strengths:
-- {len(resume.skills)} technical skills identified
-- {len(resume.experience)} work experiences documented
-- Clear contact information provided
-
-Weaknesses:
-- Consider adding more quantifiable achievements
-- Expand skill descriptions with proficiency levels
-
-CONTENT IMPROVEMENTS
-- Use action verbs to describe responsibilities
-- Include metrics and results where possible
-- Organize skills by category
-
-FORMAT SUGGESTIONS
-- Maintain consistent formatting throughout
-- Use clear section headings
-- Keep to 1-2 pages maximum
-
-ATS OPTIMIZATION
-- Include relevant keywords from job descriptions
-- Use standard fonts and formatting
-- Save as PDF to maintain formatting
-"""
+def _generate_resume_analysis(resume: Resume) -> Dict[str, Any]:
+    """Generate AI-powered analysis from resume data using backend tool."""
+    from tools.executor import execute_tool
+    
+    # Convert Resume model to dict for tool execution
+    resume_dict = {
+        "name": resume.name,
+        "email": resume.email,
+        "phone": resume.phone,
+        "summary": resume.summary,
+        "skills": [skill.name for skill in resume.skills],
+        "education": [f"{edu.degree} from {edu.institution}" for edu in resume.education],
+        "experience": [f"{exp.position} at {exp.company}: {exp.description}" for exp in resume.experience]
+    }
+    
+    result = execute_tool("analyze_resume_quality", {"resume_data": resume_dict})
+    
+    if result.get("success"):
+        return result["result"]
+    else:
+        # Fallback analysis if tool fails
+        return {
+            "overall_assessment": "Unable to generate detailed analysis at this time.",
+            "strengths": ["Resume uploaded successfully"],
+            "weaknesses": ["Analysis unavailable"],
+            "content_improvements": ["Try uploading again"],
+            "format_suggestions": ["Ensure resume is in a supported format"],
+            "ats_optimization": ["Use standard section headings"]
+        }
 
 
 def _render_tips_section():

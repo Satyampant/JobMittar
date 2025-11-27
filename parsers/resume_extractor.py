@@ -16,7 +16,8 @@ def extract_resume(resume_text: str) -> Resume:
             model=settings.api.groq_model,
             messages=[{"role": "user", "content": f"{settings.prompts.resume_extraction}\n\nResume:\n{resume_text}"}],
             response_model=Resume,
-            max_tokens=settings.api.max_tokens
+            max_tokens=settings.api.max_tokens,
+            temperature=0.3
         )
     except Exception:
         return Resume(name="Unknown", email="unknown@email.com", phone=None, 

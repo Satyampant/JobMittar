@@ -75,6 +75,26 @@ prompts:
     
     Ensure accuracy, completeness, and proper formatting.
 
+  resume_quality_analysis: |
+    Conduct a comprehensive, professional analysis of this resume with specific, actionable feedback.
+    
+    Resume Profile:
+    Name: {name}
+    Professional Summary: {summary}
+    Technical Skills: {skills}
+    Work Experience: {experience}
+    Educational Background: {education}
+    
+    Deliver structured, personalized analysis:
+    1. overall_assessment: Concise 2-3 sentence professional evaluation
+    2. strengths: 4-6 specific strengths with examples from actual resume content
+    3. weaknesses: 4-6 concrete areas for improvement referencing actual gaps
+    4. content_improvements: 4-5 prioritized, actionable content enhancements
+    5. format_suggestions: 3-4 professional formatting recommendations
+    6. ats_optimization: 3-4 specific ATS compatibility improvements
+    
+    Reference actual resume details. Provide concrete examples, not generic templates.
+
   job_match_analysis: |
     Conduct a thorough, professional analysis of resume-job compatibility.
     
@@ -122,7 +142,7 @@ prompts:
     - Cover edge cases and advanced topics for senior roles
     - Balance technical depth with communication and collaboration assessment
 
-  # NEW: Interview audio and feedback prompts (production-grade)
+# NOTE: interview_audio_generation is currently unused - TTS directly converts question text
   interview_audio_generation: |
     Generate professional, clear speech for this {question_type} interview question.
     Maintain appropriate pacing and emphasis. Question: {question_text}

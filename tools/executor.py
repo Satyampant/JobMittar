@@ -20,7 +20,8 @@ def execute_tool(tool_name: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         "generate_interview_questions": _execute_question_generation,
         "generate_question_audio": _execute_audio_generation,
         "transcribe_candidate_response": _execute_transcription,
-        "generate_interview_feedback": _execute_feedback_generation
+        "generate_interview_feedback": _execute_feedback_generation,
+        "analyze_resume_quality": _execute_resume_analysis
     }
     
     handler = handlers.get(tool_name)
@@ -89,6 +90,45 @@ def _execute_match_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
         
     except Exception as e:
         raise ToolExecutionError(f"Match analysis failed: {str(e)}")
+    
+def _execute_resume_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
+    """Execute resume quality analysis using Instructor."""
+    from models.resume import ResumeAnalysis
+    
+    settings = get_settings()
+    client = instructor.from_groq(
+        Groq(api_key=settings.groq_api_key), 
+        mode=instructor.Mode.JSON
+    )
+    
+    resume = params['resume_data']
+    
+    # Format resume data for prompt
+    skills_str = ', '.join(resume.get('skills', [])[:10]) if resume.get('skills') else 'None listed'
+    experience_str = '; '.join([exp[:100] for exp in resume.get('experience', [])[:3]]) if resume.get('experience') else 'None listed'
+    education_str = '; '.join(resume.get('education', [])[:3]) if resume.get('education') else 'None listed'
+    
+    prompt = settings.prompts.resume_quality_analysis.format(
+        name=resume.get('name', 'Unknown'),
+        summary=resume.get('summary', 'No summary provided')[:300],
+        skills=skills_str,
+        experience=experience_str,
+        education=education_str
+    )
+    
+    try:
+        result: ResumeAnalysis = client.chat.completions.create(
+            model=settings.api.groq_model,
+            messages=[{"role": "user", "content": prompt}],
+            response_model=ResumeAnalysis,
+            max_tokens=settings.api.max_tokens,
+            temperature=0.7
+        )
+        
+        return result.model_dump()
+        
+    except Exception as e:
+        raise ToolExecutionError(f"Resume analysis failed: {str(e)}")
 
 def _execute_question_generation(params: Dict[str, Any]) -> list:
     """Execute question generation using config prompts and Instructor."""
@@ -157,12 +197,6 @@ def _execute_audio_generation(params: Dict[str, Any]) -> bytes:
     question_text = params['question_text']
     question_type = params.get('question_type', 'General')
     
-    # Use centralized prompt from config
-    prompt = settings.prompts.interview_audio_generation.format(
-        question_type=question_type,
-        question_text=question_text
-    )
-    
     with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmp_file:
         temp_path = tmp_file.name
     
@@ -170,7 +204,7 @@ def _execute_audio_generation(params: Dict[str, Any]) -> bytes:
         response = client.audio.speech.create(
             model="playai-tts",
             voice="Deedee-PlayAI",
-            input=prompt,
+            input=question_text,
             response_format="mp3"
         )
         response.write_to_file(temp_path)

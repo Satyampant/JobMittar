@@ -1,6 +1,6 @@
 """Pydantic models for type-safe data handling across the Job Search Assistant."""
 
-from .resume import Resume, Education, WorkExperience, Skill
+from .resume import Resume, Education, WorkExperience, Skill, ResumeAnalysis
 from .job import Job, JobRequirements, Company
 from .interview import (
     Interview, 
@@ -13,7 +13,7 @@ from .interview import (
 from .skills import SkillCategory, SkillMatch, SkillGap
 
 __all__ = [
-    "Resume", "Education", "WorkExperience", "Skill",
+    "Resume", "Education", "WorkExperience", "Skill", "ResumeAnalysis",
     "Job", "JobRequirements", "Company",
     "Interview", "InterviewQuestion", "InterviewResponse",
     "InterviewQuestionResponse", "InterviewFeedback", "InterviewSessionState",

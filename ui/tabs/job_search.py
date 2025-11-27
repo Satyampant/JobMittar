@@ -97,7 +97,7 @@ def _execute_resume_based_search(location: str):
                 st.success(f"Found {len(jobs)} jobs matching your resume!")
                 st.rerun()
             else:
-                st.error(f"Job search failed: {result.get('error', 'Unknown error')}")
+                st.error(f"Job search failed: {result.get('error', 'Unknown error')}. Try for some other location.")
 
         except Exception as e:
             st.error(f"Error searching for jobs: {str(e)}")

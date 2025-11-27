@@ -96,6 +96,19 @@ generate_feedback_tool = {
     }
 }
 
+# Resume Analysis Tool
+analyze_resume_tool = {
+    "name": "analyze_resume_quality",
+    "description": "Analyze resume quality, identify strengths, weaknesses, and provide actionable recommendations using Groq LLM.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "resume_data": {"type": "object", "description": "Parsed resume with skills, experience, education, and summary"}
+        },
+        "required": ["resume_data"]
+    }
+}
+
 # Tool Registry for dynamic lookup
 TOOL_REGISTRY = {
     "search_jobs": search_jobs_tool,
@@ -103,5 +116,6 @@ TOOL_REGISTRY = {
     "generate_interview_questions": generate_questions_tool,
     "generate_question_audio": generate_audio_tool,
     "transcribe_candidate_response": transcribe_audio_tool,
-    "generate_interview_feedback": generate_feedback_tool
+    "generate_interview_feedback": generate_feedback_tool,
+    "analyze_resume_quality": analyze_resume_tool
 }

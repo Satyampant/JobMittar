@@ -171,29 +171,35 @@ def apply_styling():
 
 
 def display_resume_analysis_summary(resume_data):
-    """Display resume summary (exact visual match from legacy)."""
+    """Display AI-generated resume summary."""
     if not resume_data:
         st.warning("Resume data is not available.")
         return
 
-    skills = resume_data.get("skills", [])
-    experience = resume_data.get("experience", [])
+    analysis = resume_data.get("analysis", {})
+    
+    if not analysis or not isinstance(analysis, dict):
+        st.warning("Resume analysis is not available. Please re-upload your resume.")
+        return
 
     st.subheader("Resume Analysis Summary")
+    
+    # Overall Assessment
+    if analysis.get("overall_assessment"):
+        st.markdown(f"""
+        <div style="background-color: {COLORS['primary']}; color: white; padding: 15px; 
+        border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+        <h4 style="margin: 0 0 10px 0; color: white;">📊 Overall Assessment</h4>
+        <p style="margin: 0; line-height: 1.6;">{analysis['overall_assessment']}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("""<h4 style="color: #1A237E; margin-bottom: 10px;">Strengths</h4>""", unsafe_allow_html=True)
-        strengths = []
+        st.markdown("""<h4 style="color: #1A237E; margin-bottom: 10px;">💪 Strengths</h4>""", unsafe_allow_html=True)
+        strengths = analysis.get("strengths", [])
         
-        if len(skills) >= 5:
-            strengths.append("Strong technical skills portfolio")
-        if len(experience) >= 2:
-            strengths.append("Solid work experience")
-        if any("python" in skill.lower() for skill in skills):
-            strengths.append("In-demand programming skills")
-
         if strengths:
             for strength in strengths:
                 st.markdown(
@@ -205,34 +211,28 @@ def display_resume_analysis_summary(resume_data):
         else:
             st.markdown(
                 """<div style="background-color: #546E7A; color: white; padding: 12px; 
-                border-radius: 6px;">No obvious strengths identified</div>""", 
+                border-radius: 6px;">Analysis unavailable</div>""", 
                 unsafe_allow_html=True
             )
 
     with col2:
-        st.markdown("""<h4 style="color: #B71C1C; margin-bottom: 10px;">Areas to Improve</h4>""", unsafe_allow_html=True)
-        improvements = []
+        st.markdown("""<h4 style="color: #B71C1C; margin-bottom: 10px;">🎯 Areas to Improve</h4>""", unsafe_allow_html=True)
+        weaknesses = analysis.get("weaknesses", [])
         
-        if len(skills) < 5:
-            improvements.append("Add more technical skills")
-        if not any("cloud" in skill.lower() for skill in skills):
-            improvements.append("Consider adding cloud platform experience")
-
-        if improvements:
-            for improvement in improvements:
+        if weaknesses:
+            for weakness in weaknesses:
                 st.markdown(
                     f"""<div style="background-color: #C62828; color: white; padding: 12px; 
                     border-radius: 6px; margin-bottom: 10px; font-weight: 500;">
-                    ⚠️ {improvement}</div>""", 
+                    ⚠️ {weakness}</div>""", 
                     unsafe_allow_html=True
                 )
         else:
             st.markdown(
-                """<div style="background-color: #2E7D32; color: white; padding: 12px; 
-                border-radius: 6px;">No obvious improvement areas identified</div>""", 
+                """<div style="background-color: #546E7A; color: white; padding: 12px; 
+                border-radius: 6px;">Analysis unavailable</div>""", 
                 unsafe_allow_html=True
             )
-
 
 def display_extracted_information(resume_data):
     """Display extracted resume info (exact visual match from legacy)."""
@@ -314,47 +314,28 @@ def display_extracted_information(resume_data):
 
 
 def display_formatted_analysis(analysis):
-    """Display formatted resume analysis (exact visual match from legacy)."""
-    if not analysis:
+    """Display AI-generated formatted resume analysis."""
+    if not analysis or not isinstance(analysis, dict):
+        st.info("Detailed analysis is not available.")
         return
 
-    sections = {
-        "Overall Assessment": "",
-        "Content Improvements": "",
-        "Format Suggestions": "",
-        "ATS Optimization": ""
-    }
+    section_configs = [
+        ("content_improvements", "Content Improvements", "#1b3a4b", "📝"),
+        ("format_suggestions", "Format Suggestions", "#4d194d", "🎨"),
+        ("ats_optimization", "ATS Optimization", "#54478c", "🤖")
+    ]
 
-    current_section = None
-    lines = analysis.split('\n')
-
-    for line in lines:
-        for section in sections.keys():
-            if section.lower() in line.lower():
-                current_section = section
-                break
-
-        if current_section and line:
-            sections[current_section] += line + "\n"
-
-    section_colors = {
-        "Overall Assessment": "#3a506b",
-        "Content Improvements": "#1b3a4b",
-        "Format Suggestions": "#4d194d",
-        "ATS Optimization": "#54478c"
-    }
-
-    for section, content in sections.items():
-        if content.strip():
-            st.subheader(section)
-            bg_color = section_colors.get(section, "#3a506b")
+    for key, title, color, icon in section_configs:
+        items = analysis.get(key, [])
+        if items:
+            st.subheader(f"{icon} {title}")
+            content = "\n".join(f"• {item}" for item in items)
             st.markdown(
-                f"""<div style='background-color: {bg_color}; color: white; 
+                f"""<div style='background-color: {color}; color: white; 
                 padding: 15px; border-radius: 8px; margin-top: 10px; 
-                font-size: 16px; line-height: 1.5;'>{content}</div>""", 
+                font-size: 16px; line-height: 1.8;'>{content}</div>""", 
                 unsafe_allow_html=True
             )
-
 
 def format_job_description(description):
     """Format job description (exact visual match from legacy)."""

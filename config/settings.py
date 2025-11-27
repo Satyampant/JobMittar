@@ -15,10 +15,11 @@ class PromptConfig(BaseModel):
     job_search_agent: str
     match_analysis_agent: str
     interview_prep_agent: str
-    interview_agent: str  # NEW
+    interview_agent: str
     
     # Execution prompts (for actual LLM calls)
     resume_extraction: str
+    resume_quality_analysis: str 
     job_match_analysis: str
     interview_questions_generation: str
     

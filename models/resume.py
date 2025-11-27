@@ -54,3 +54,12 @@ class Resume(BaseModel):
         if len(v) < 1:
             raise ValueError('At least one skill is required')
         return v
+
+class ResumeAnalysis(BaseModel):
+    """Resume quality analysis result."""
+    overall_assessment: str = Field(..., min_length=20)
+    strengths: List[str] = Field(default_factory=list, min_items=3)
+    weaknesses: List[str] = Field(default_factory=list, min_items=3)
+    content_improvements: List[str] = Field(default_factory=list)
+    format_suggestions: List[str] = Field(default_factory=list)
+    ats_optimization: List[str] = Field(default_factory=list)
