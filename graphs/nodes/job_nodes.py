@@ -1,5 +1,4 @@
 """Job search and matching nodes for LangGraph workflow.
-
 These nodes handle job search execution, job selection, and resume-job matching.
 """
 
@@ -10,18 +9,14 @@ from tools.executor import execute_tool
 
 def search_jobs_node(state: JobMittrState) -> JobMittrState:
     """Execute job search based on query parameters.
-    
     Expects state["job_query"] with:
     - keywords: str (job title/role)
     - location: str (geographic location)
     - platform: str (optional, defaults to LinkedIn)
     - count: int (optional, defaults to 10)
-    
     Updates state["job_results"] with search results.
-    
     Args:
         state: Current workflow state with job_query
-        
     Returns:
         Updated state with job_results
     """
@@ -78,15 +73,11 @@ def search_jobs_node(state: JobMittrState) -> JobMittrState:
 
 def select_job_node(state: JobMittrState) -> JobMittrState:
     """Select a job from search results.
-    
     By default selects first job. If state["user_preferences"]["job_index"]
     is set, uses that index instead.
-    
     Updates state["selected_job"] with chosen job.
-    
     Args:
         state: Current workflow state with job_results
-        
     Returns:
         Updated state with selected_job
     """
@@ -120,16 +111,12 @@ def select_job_node(state: JobMittrState) -> JobMittrState:
 
 def analyze_match_node(state: JobMittrState) -> JobMittrState:
     """Analyze resume-job compatibility.
-    
     Expects:
     - state["resume_data"]: Parsed resume
     - state["selected_job"]: Selected job listing
-    
     Updates state["match_analysis"] with match results.
-    
     Args:
         state: Current workflow state with resume and selected job
-        
     Returns:
         Updated state with match_analysis
     """

@@ -7,13 +7,10 @@ from pydantic import BaseModel
 
 def convert_pydantic_to_dict(model: BaseModel) -> Dict[str, Any]:
     """Convert Pydantic model to plain dict for state storage.
-    
     Handles nested models and special types (datetime, date).
     Prevents Pydantic serialization issues in LangGraph state.
-    
     Args:
         model: Pydantic model instance
-        
     Returns:
         Plain dict representation
     """
@@ -53,10 +50,8 @@ def _convert_item(item: Any) -> Any:
 
 def extract_contact_info(resume_dict: Dict[str, Any]) -> Dict[str, str]:
     """Extract contact info into standardized format.
-    
     Args:
         resume_dict: Parsed resume dictionary
-        
     Returns:
         Contact info dict with email and phone
     """
@@ -68,12 +63,10 @@ def extract_contact_info(resume_dict: Dict[str, Any]) -> Dict[str, str]:
 
 def format_skills_list(skills: List[Any]) -> List[str]:
     """Format skills from various formats to simple string list.
-    
     Handles:
     - List of Skill objects (with name field)
     - List of dicts (with 'name' key)
     - List of strings
-    
     Args:
         skills: Skills in various formats
         
@@ -97,10 +90,8 @@ def format_skills_list(skills: List[Any]) -> List[str]:
 
 def format_education_list(education: List[Any]) -> List[str]:
     """Format education entries to readable strings.
-    
     Args:
         education: Education entries in various formats
-        
     Returns:
         List of formatted education strings
     """
@@ -123,10 +114,8 @@ def format_education_list(education: List[Any]) -> List[str]:
 
 def format_experience_list(experience: List[Any]) -> List[str]:
     """Format work experience entries to readable strings.
-    
     Args:
         experience: Experience entries in various formats
-        
     Returns:
         List of formatted experience strings
     """

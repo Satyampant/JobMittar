@@ -1,5 +1,4 @@
 """Resume processing nodes for LangGraph workflow.
-
 These nodes handle the resume upload → parse → analyze → validate pipeline.
 """
 
@@ -12,13 +11,10 @@ from models.resume import Resume
 
 def parse_resume_node(state: JobMittrState) -> JobMittrState:
     """Parse raw resume text into structured Resume model.
-    
     Expects state["resume_data"]["raw_text"] to be set.
     Updates state["resume_data"] with parsed fields.
-    
     Args:
-        state: Current workflow state with raw_text
-        
+        state: Current workflow state with raw_text   
     Returns:
         Updated state with parsed resume data
     """
@@ -32,7 +28,7 @@ def parse_resume_node(state: JobMittrState) -> JobMittrState:
         }
     
     try:
-        # Use existing resume extractor (returns Pydantic Resume model)
+        # Using existing resume extractor (returns Pydantic Resume model)
         resume: Resume = extract_resume(raw_text)
         
         # Convert to dict for state storage (avoid Pydantic serialization issues)
@@ -59,13 +55,10 @@ def parse_resume_node(state: JobMittrState) -> JobMittrState:
 
 def analyze_resume_node(state: JobMittrState) -> JobMittrState:
     """Generate AI-powered quality analysis of parsed resume.
-    
     Expects state["resume_data"] to contain parsed fields.
     Adds analysis to state["resume_data"]["analysis"].
-    
     Args:
         state: Current workflow state with parsed resume
-        
     Returns:
         Updated state with resume analysis
     """
@@ -133,13 +126,10 @@ def analyze_resume_node(state: JobMittrState) -> JobMittrState:
 
 def validate_resume_node(state: JobMittrState) -> JobMittrState:
     """Validate resume has required fields for downstream operations.
-    
     Checks for: name, email, skills (at least 1).
     Sets error state if validation fails.
-    
     Args:
         state: Current workflow state with parsed resume
-        
     Returns:
         Updated state with validation status
     """

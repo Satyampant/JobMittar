@@ -11,8 +11,6 @@ from pydantic import BaseModel, Field, field_validator
 
 class JobMittrState(TypedDict, total=False):
     """Comprehensive state model for JobMittar workflow.
-    
-    This TypedDict defines all state that flows through the LangGraph.
     Each field is optional to allow partial initialization and gradual population.
     """
     
@@ -59,7 +57,6 @@ class JobMittrState(TypedDict, total=False):
 
 class JobMittrStateValidator(BaseModel):
     """Pydantic validator for state integrity checks.
-    
     Use this to validate state before critical operations.
     """
     
@@ -102,16 +99,11 @@ class JobMittrStateValidator(BaseModel):
     model_config = {"extra": "allow"}
 
 
-def create_initial_state(
-    current_step: str = "resume_upload",
-    resume_data: Optional[Dict] = None
-) -> JobMittrState:
+def create_initial_state(current_step: str = "resume_upload",resume_data: Optional[Dict] = None) -> JobMittrState:
     """Factory function to create initial state with defaults.
-    
     Args:
         current_step: Starting workflow stage
         resume_data: Optional pre-loaded resume data
-        
     Returns:
         Initialized JobMittrState ready for graph execution
     """
@@ -132,10 +124,8 @@ def create_initial_state(
 
 def validate_state(state: JobMittrState) -> tuple[bool, Optional[str]]:
     """Validate state integrity using Pydantic.
-    
     Args:
         state: State to validate
-        
     Returns:
         (is_valid, error_message) tuple
     """

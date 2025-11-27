@@ -10,6 +10,13 @@ from .job_nodes import (
     select_job_node,
     analyze_match_node
 )
+from .interview_nodes import (
+    generate_questions_node,
+    initialize_interview_session_node,
+    conduct_question_node,
+    advance_question_node,
+    finalize_interview_node
+)
 
 __all__ = [
     # Resume nodes
@@ -21,4 +28,11 @@ __all__ = [
     'search_jobs_node',
     'select_job_node',
     'analyze_match_node'
+
+    # Interview nodes
+    'generate_questions_node',
+    'initialize_interview_session_node',
+    'conduct_question_node',
+    'advance_question_node',
+    'finalize_interview_node'
 ]
