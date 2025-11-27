@@ -12,7 +12,8 @@ def get_agent_prompts():
     return {
         "job_search": settings.prompts.job_search_agent,
         "match_analysis": settings.prompts.match_analysis_agent,
-        "interview_prep": settings.prompts.interview_prep_agent
+        "interview_prep": settings.prompts.interview_prep_agent,
+        "interview": settings.prompts.interview_agent 
     }
 
 # Backward compatibility
