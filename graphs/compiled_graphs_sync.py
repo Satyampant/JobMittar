@@ -1,6 +1,5 @@
 """Synchronous graph compilation for Streamlit compatibility."""
 
-import asyncio
 from graphs.master_graph import build_master_graph
 from graphs.checkpointers import get_checkpointer
 
@@ -11,15 +10,8 @@ def compile_master_graph_sync():
     Returns:
         Compiled graph with checkpointing enabled
     """
-    # Get checkpointer synchronously
-    try:
-        checkpointer = asyncio.run(get_checkpointer())
-    except RuntimeError:
-        # If event loop already running (Streamlit case), create new one
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        checkpointer = loop.run_until_complete(get_checkpointer())
-        loop.close()
+    # Get synchronous checkpointer (no async/await needed)
+    checkpointer = get_checkpointer()
     
     # Build and compile graph
     graph = build_master_graph()

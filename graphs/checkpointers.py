@@ -1,41 +1,28 @@
-"""LangGraph checkpointing configuration for persistent state management."""
+"""LangGraph checkpointing - MemorySaver for Streamlit compatibility."""
 
-import asyncio
+import sys
 from pathlib import Path
-from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from langgraph.checkpoint.memory import MemorySaver
+
+# Add project root to path when running directly
+if __name__ == "__main__":
+    project_root = Path(__file__).parent.parent
+    sys.path.insert(0, str(project_root))
 
 
-# Ensure checkpoints directory exists
-CHECKPOINT_DIR = Path("checkpoints")
-CHECKPOINT_DIR.mkdir(exist_ok=True)
-CHECKPOINT_DB = CHECKPOINT_DIR / "jobmittr.db"
-
-
-async def get_checkpointer() -> AsyncSqliteSaver:
-    """Create and initialize async SQLite checkpointer.
+def get_checkpointer() -> MemorySaver:
+    """Create in-memory checkpointer (Streamlit-compatible).
+    
+    MemorySaver is ideal for Streamlit because:
+    - No async/event loop issues
+    - No context manager complications
+    - Persists within session via st.session_state
+    - Simple and fast
     
     Returns:
-        Configured AsyncSqliteSaver instance
+        Configured MemorySaver instance
     """
-    # Create checkpointer from connection string
-    checkpointer_context = AsyncSqliteSaver.from_conn_string(str(CHECKPOINT_DB))
-    
-    # Enter the async context manager to get the actual checkpointer
-    checkpointer = await checkpointer_context.__aenter__()
-    
-    # Setup database schema
-    await checkpointer.setup()
-    
-    return checkpointer
-
-
-def get_checkpointer_sync() -> AsyncSqliteSaver:
-    """Synchronous wrapper for checkpointer initialization.
-    
-    Returns:
-        Configured AsyncSqliteSaver instance
-    """
-    return asyncio.run(get_checkpointer())
+    return MemorySaver()
 
 
 # Thread ID generation utilities
@@ -51,22 +38,35 @@ def generate_workflow_thread_id(workflow_type: str, user_id: str = "default") ->
 
 
 if __name__ == "__main__":
-    # Test checkpointer initialization
-    print("Testing Checkpointer Initialization")
+    print("Testing MemorySaver Checkpointer")
     print("=" * 60)
     
-    async def test_checkpointer():
-        checkpointer = await get_checkpointer()
-        print(f"✓ Checkpointer initialized: {type(checkpointer)}")
-        print(f"✓ Database path: {CHECKPOINT_DB}")
-        print(f"✓ Database exists: {CHECKPOINT_DB.exists()}")
-        
-        # Test thread ID generation
-        thread_id = generate_interview_thread_id("Python Developer")
-        print(f"✓ Generated thread ID: {thread_id}")
-        
-        return checkpointer
+    checkpointer = get_checkpointer()
+    print(f"✓ Checkpointer initialized: {type(checkpointer)}")
+    print(f"✓ Type: MemorySaver (in-memory, session-based)")
     
-    asyncio.run(test_checkpointer())
+    thread_id = generate_interview_thread_id("Python Developer")
+    print(f"✓ Generated thread ID: {thread_id}")
+    
+    # Test checkpoint operations
+    from langgraph.checkpoint.base import Checkpoint
+    from uuid import uuid4
+    
+    config = {"configurable": {"thread_id": thread_id}}
+    
+    # Create test checkpoint
+    test_checkpoint = Checkpoint(
+        v=1,
+        id=str(uuid4()),
+        ts="2024-01-01T00:00:00Z",
+        channel_values={"test": "data"}
+    )
+    
+    # Test put/get
+    checkpointer.put(config, test_checkpoint, {})
+    retrieved = checkpointer.get(config)
+    
+    print(f"✓ Checkpoint storage works: {retrieved is not None}")
+    
     print("\n" + "=" * 60)
-    print("Checkpointer setup complete!")
+    print("MemorySaver checkpointer ready for Streamlit!")

@@ -1,10 +1,7 @@
-"""Streamlit adapter for LangGraph integration with async/sync bridging."""
+"""Streamlit adapter for LangGraph - fully synchronous."""
 
-import asyncio
 import streamlit as st
-from typing import Dict, Any, Optional, Iterator
-# from langgraph.graph import CompiledGraph
-from graphs.checkpointers import get_checkpointer
+from typing import Dict, Any, Iterator
 
 
 def invoke_graph_sync(
@@ -12,7 +9,7 @@ def invoke_graph_sync(
     state: Dict[str, Any],
     thread_id: str
 ) -> Dict[str, Any]:
-    """Synchronous wrapper for graph invocation (Streamlit compatible).
+    """Synchronous graph invocation (Streamlit compatible).
     
     Args:
         graph: Compiled LangGraph instance
@@ -25,7 +22,7 @@ def invoke_graph_sync(
     config = {"configurable": {"thread_id": thread_id}}
     
     try:
-        # LangGraph's invoke is synchronous by default
+        # LangGraph's invoke is synchronous by default with SqliteSaver
         result = graph.invoke(state, config=config)
         return result
     except Exception as e:
@@ -88,33 +85,6 @@ def get_or_create_thread_id(prefix: str = "streamlit") -> str:
         st.session_state.thread_id = f"{prefix}_{uuid.uuid4().hex[:8]}"
     
     return st.session_state.thread_id
-
-
-async def invoke_graph_async(
-    graph,
-    state: Dict[str, Any],
-    thread_id: str
-) -> Dict[str, Any]:
-    """Async graph invocation for future integration.
-    
-    Args:
-        graph: Compiled LangGraph instance
-        state: Input state dictionary
-        thread_id: Thread identifier
-        
-    Returns:
-        Final state after execution
-    """
-    # Wrap sync invoke in async
-    loop = asyncio.get_event_loop()
-    config = {"configurable": {"thread_id": thread_id}}
-    
-    result = await loop.run_in_executor(
-        None,
-        lambda: graph.invoke(state, config=config)
-    )
-    
-    return result
 
 
 def display_state_summary(state: Dict[str, Any]):
