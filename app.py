@@ -66,7 +66,7 @@ background: linear-gradient(135deg, {COLORS["secondary"]}, {COLORS["tertiary"]},
 border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);'>
     <h1 style='color: white; font-size: 2.8rem; margin-bottom: 0.5rem; 
     text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: 700;'>
-    💼 A Smarter Way to Get Hired</h1>
+    💼 JobMittar, A Smarter Way to Get Hired</h1>
     <h5 style='color: white; font-size: 1.2rem; margin-bottom: 0.5rem;'>
     Analyze your resume, find the right roles, and practice interviews — all in one place.</h5>
     <p style='color: white; font-size: 1.2rem; font-weight: 600; margin: 0.5rem 2rem; 
