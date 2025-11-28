@@ -1,14 +1,7 @@
-"""LangGraph checkpointing configuration for persistent state management.
-
-This module configures SQLite-based checkpointing to enable:
-- Session resumption across process restarts
-- Interview state recovery after interruptions
-- Thread-based workflow isolation
-"""
+"""LangGraph checkpointing configuration for persistent state management."""
 
 import asyncio
 from pathlib import Path
-from typing import Optional
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 
@@ -24,9 +17,15 @@ async def get_checkpointer() -> AsyncSqliteSaver:
     Returns:
         Configured AsyncSqliteSaver instance
     """
-    checkpointer = AsyncSqliteSaver.from_conn_string(str(CHECKPOINT_DB))
-    # Initialize database schema
+    # Create checkpointer from connection string
+    checkpointer_context = AsyncSqliteSaver.from_conn_string(str(CHECKPOINT_DB))
+    
+    # Enter the async context manager to get the actual checkpointer
+    checkpointer = await checkpointer_context.__aenter__()
+    
+    # Setup database schema
     await checkpointer.setup()
+    
     return checkpointer
 
 
@@ -39,43 +38,15 @@ def get_checkpointer_sync() -> AsyncSqliteSaver:
     return asyncio.run(get_checkpointer())
 
 
-async def cleanup_old_checkpoints(days_old: int = 30):
-    """Remove checkpoints older than specified days.
-    
-    Args:
-        days_old: Age threshold for deletion
-    """
-    checkpointer = await get_checkpointer()
-    # LangGraph checkpointer handles automatic cleanup
-    # This is a placeholder for future custom cleanup logic
-    pass
-
-
 # Thread ID generation utilities
 def generate_interview_thread_id(job_title: str, user_id: str = "default") -> str:
-    """Generate consistent thread ID for interview sessions.
-    
-    Args:
-        job_title: Job position being interviewed for
-        user_id: User identifier
-        
-    Returns:
-        Formatted thread ID
-    """
+    """Generate consistent thread ID for interview sessions."""
     safe_title = job_title.replace(" ", "_").lower()
     return f"interview_{user_id}_{safe_title}"
 
 
 def generate_workflow_thread_id(workflow_type: str, user_id: str = "default") -> str:
-    """Generate thread ID for general workflows.
-    
-    Args:
-        workflow_type: Type of workflow (resume_analysis, job_search, etc.)
-        user_id: User identifier
-        
-    Returns:
-        Formatted thread ID
-    """
+    """Generate thread ID for general workflows."""
     return f"workflow_{user_id}_{workflow_type}"
 
 

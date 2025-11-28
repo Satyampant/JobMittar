@@ -1,233 +1,101 @@
 """Interview Preparation tab - LangGraph integrated with checkpointing."""
 
 import streamlit as st
-from langchain_core.messages import HumanMessage
+from datetime import datetime
 
-from components.interview_ui import InterviewUI
-from ui_utils import COLORS
-from graphs.streamlit_adapter import (
-    invoke_graph_sync,
-    stream_to_streamlit,
-    get_or_create_thread_id,
-    display_state_summary
+from ui_utils import apply_styling, COLORS
+
+# Import graph compilation
+from graphs.compiled_graphs_sync import compile_master_graph_sync
+
+# Import refactored tab renderers with graph support
+from ui.tabs.resume_analysis_refactored import render_resume_analysis_tab
+from ui.tabs.job_search_refactored import render_job_search_tab
+from ui.tabs.interview_prep_refactored import render_interview_prep_tab
+from ui.tabs.saved_jobs import render_saved_jobs_tab
+
+# Load and compile graph once at startup
+@st.cache_resource
+def get_compiled_graph():
+    """Compile graph once and cache it."""
+    return compile_master_graph_sync()
+
+# Set page configuration
+st.set_page_config(
+    page_title="Professional Job Search Assistant",
+    page_icon="💼",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
+# Apply custom styling
+apply_styling()
 
-def render_interview_prep_tab(graph):
-    """Render Interview Preparation tab with graph integration.
-    
-    Args:
-        graph: Compiled master orchestration graph with checkpointing
-    """
-    st.header("Interview Preparation")
+# Application header
+st.markdown(f"""
+<div style='text-align:center; padding: 1.5rem 0; 
+background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}, {COLORS["tertiary"]}); 
+border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>
+    <h1 style='color: white; font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);'>
+    Professional Job Search Assistant</h1>
+    <p style='color: white; font-size: 1.2rem; font-weight: 500; margin: 0.5rem 2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);'>
+    <span style='background-color: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; margin: 0 5px;'>
+    LangGraph-powered orchestration</span> 
+    <span style='background-color: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; margin: 0 5px;'>
+    Persistent checkpoints</span> 
+    <span style='background-color: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; margin: 0 5px;'>
+    Intelligent routing</span>
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
-    if st.session_state.get("selected_job"):
-        # Check for active session (restored from checkpoint or new)
-        if st.session_state.get('interview_session') and st.session_state.interview_session.get('is_active'):
-            _render_active_interview_with_graph(graph)
-        else:
-            _render_interview_setup(graph)
-    else:
-        st.info("Please select a job from the Job Search tab first.")
+# Initialize session state
+if "resume_data" not in st.session_state:
+    st.session_state.resume_data = None
+if "job_results" not in st.session_state:
+    st.session_state.job_results = []
+if "selected_job" not in st.session_state:
+    st.session_state.selected_job = None
+if "interview_questions" not in st.session_state:
+    st.session_state.interview_questions = None
+if "saved_jobs" not in st.session_state:
+    from utils.job_storage import load_saved_jobs
+    st.session_state.saved_jobs = load_saved_jobs()
 
+# Compile graph (cached)
+graph = get_compiled_graph()
 
-def _render_active_interview_with_graph(graph):
-    """Render active interview using graph with checkpoint resumption."""
-    st.info("🎙️ **Live Interview Session** - Powered by LangGraph with checkpoint persistence")
-    
-    # Use InterviewUI for rendering (it already handles session state)
-    interview_ui = InterviewUI()
-    
-    interview_ui.render_interview_header()
-    interview_ui.render_current_question()
-    interview_ui.render_response_recorder()
-    interview_ui.render_navigation_buttons()
-    
-    # Show checkpoint thread ID for debugging
-    thread_id = get_or_create_thread_id("interview")
-    with st.expander("🔧 Debug Info"):
-        st.write(f"Thread ID: {thread_id}")
-        st.write(f"Checkpoint enabled: {graph.checkpointer is not None}")
+# Create main navigation tabs
+tabs = st.tabs([
+    "📄 Resume Analysis", 
+    "🔍 Job Search", 
+    "🎯 Interview Preparation", 
+    "💼 Saved Jobs"
+])
 
+# Tab 1: Resume Analysis (with graph)
+with tabs[0]:
+    render_resume_analysis_tab(graph)
 
-def _render_interview_setup(graph):
-    """Setup interview with graph-based question generation."""
-    selected_job = st.session_state.selected_job
+# Tab 2: Job Search (with graph)
+with tabs[1]:
+    render_job_search_tab(graph)
 
-    st.markdown(f"""
-    <div style='background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}); 
-    padding: 1rem; border-radius: 10px; margin-bottom: 1rem;'>
-        <h3 style='color: white; margin: 0;'>Prepare for: {selected_job.get('title', 'Unknown')}</h3>
-        <p style='color: white; margin: 0.5rem 0 0 0;'>{selected_job.get('company', 'Unknown')}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        _render_setup_controls(graph)
-
-    with col2:
-        _render_interview_tips()
-
-    # Display generated questions if available
-    if st.session_state.get('interview_questions') and not st.session_state.get('interview_session'):
-        _render_review_mode_questions()
-
-
-def _render_setup_controls(graph):
-    """Interview setup with graph invocation."""
-    interview_type = st.radio(
-        "Interview type:",
-        ["Technical Interview", "Behavioral Interview", "Coding Interview"],
-        key="interview_type"
-    )
-
-    num_questions = st.slider("Number of questions:", 5, 20, 10, key="num_interview_questions")
-
-    mode_col1, mode_col2 = st.columns(2)
-    
-    with mode_col1:
-        generate_btn = st.button("📝 Generate Questions", key="generate_interview_btn")
-    
-    with mode_col2:
-        start_live_btn = st.button("🎙️ Start Live Interview", key="start_live_interview_btn")
-
-    if generate_btn:
-        _generate_questions_via_graph(num_questions, graph)
-    
-    if start_live_btn:
-        _start_live_interview_via_graph(interview_type, num_questions, graph)
-
-
-def _generate_questions_via_graph(num_questions: int, graph):
-    """Generate questions using LangGraph."""
-    with st.spinner("🔄 Generating questions via LangGraph..."):
-        try:
-            thread_id = get_or_create_thread_id("interview_prep")
-            
-            state = {
-                "selected_job": st.session_state.selected_job,
-                "resume_data": st.session_state.get("resume_data"),
-                "current_step": "interview_prep",
-                "user_preferences": {"question_count": num_questions},
-                "messages": [HumanMessage(content=f"Generate {num_questions} interview questions")]
-            }
-
-            # Stream question generation
-            final_state = None
-            for state_update in stream_to_streamlit(graph, state, thread_id):
-                final_state = state_update
-                
-                if state_update.get("interview_questions"):
-                    st.session_state.interview_questions = {
-                        'job': st.session_state.selected_job,
-                        'type': st.session_state.interview_type,
-                        'questions': state_update["interview_questions"]
-                    }
-
-            if final_state:
-                display_state_summary(final_state)
-                
-                if final_state.get("error"):
-                    st.error(f"Generation failed: {final_state['error']}")
-                else:
-                    st.success("✅ Questions generated!")
-                    st.rerun()
-
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
-
-
-def _start_live_interview_via_graph(interview_type: str, num_questions: int, graph):
-    """Start live interview session with checkpointing enabled."""
-    with st.spinner("🔄 Initializing live interview with checkpointing..."):
-        try:
-            # Generate questions if not present
-            if not st.session_state.get('interview_questions'):
-                thread_id = get_or_create_thread_id("interview_prep")
-                
-                state = {
-                    "selected_job": st.session_state.selected_job,
-                    "resume_data": st.session_state.get("resume_data"),
-                    "current_step": "interview_prep",
-                    "user_preferences": {"question_count": num_questions},
-                    "messages": [HumanMessage(content=f"Generate {num_questions} questions")]
-                }
-                
-                result_state = invoke_graph_sync(graph, state, thread_id)
-                
-                if not result_state.get("interview_questions"):
-                    st.error("Failed to generate questions")
-                    return
-                
-                questions = result_state["interview_questions"]
-            else:
-                questions = st.session_state.interview_questions['questions']
-            
-            # Initialize session via InterviewUI (which will store in session_state)
-            interview_ui = InterviewUI()
-            interview_ui.start_interview_session(
-                job_data=st.session_state.selected_job,
-                questions=questions,
-                interview_type=interview_type
-            )
-            
-            st.success("✅ Live interview started with checkpoint support!")
-            st.info("💡 You can refresh the page - your progress will be saved!")
-            st.rerun()
+# Tab 3: Interview Preparation (with graph)
+with tabs[2]:
+    render_interview_prep_tab(graph)
         
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
+# Tab 4: Saved Jobs (no graph needed)
+with tabs[3]:
+    render_saved_jobs_tab()
 
-
-def _render_interview_tips():
-    """Interview tips section."""
-    st.subheader("Quick Tips")
-    st.markdown(f"""
-    <div style="background-color: {COLORS["primary"]}; color: white; padding: 15px; 
-    border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h4 style="margin-top: 0; color: white;">Interview Tips:</h4>
-    <ul style="margin-bottom: 0;">
-    <li>Research the company thoroughly</li>
-    <li>Use STAR method for examples</li>
-    <li>Practice technical skills</li>
-    <li>Prepare questions for interviewer</li>
-    <li><strong>NEW:</strong> Sessions persist across page refreshes!</li>
-    </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-
-def _render_review_mode_questions():
-    """Display generated questions in review mode."""
-    interview_data = st.session_state.interview_questions
-
-    st.markdown(f"""
-    <div style="background-color: {COLORS["secondary"]}; color: white; 
-    padding: 10px 15px; border-radius: 8px; margin: 20px 0;">
-    <h3 style="margin: 0;">{interview_data['type']} Questions (Review Mode)</h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.info("💡 Click 'Start Live Interview' above for voice recording with AI feedback!")
-
-    for i, question in enumerate(interview_data['questions'], 1):
-        question_text = question.get('question', 'Question not available')
-        with st.expander(f"❓ Question {i}: {question_text[:80]}...", expanded=i==1):
-            st.markdown(f"""
-            <div style="background-color: {COLORS["primary"]}; color: white; 
-            padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            {question_text}
-            </div>
-            """, unsafe_allow_html=True)
-
-            if question.get('suggested_answer'):
-                st.markdown("**Suggested Answer:**")
-                st.write(question['suggested_answer'])
-
-            if question.get('tips'):
-                st.markdown("**Tips:**")
-                st.write(question['tips'])
-
-            st.text_area("Your Notes:", key=f"note_{i}", height=100)
+# Footer
+st.markdown("---")
+st.markdown(
+    f"""<div style='text-align: center; background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}); 
+    color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);'>
+    <p style="margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+    JobMittar v2.0 - LangGraph Edition | Built with Streamlit | © {datetime.now().year}</p>
+    </div>""",
+    unsafe_allow_html=True
+)
