@@ -78,10 +78,10 @@ graph TB
     Complete2 --> End
     Complete3 --> End
     
-    style Intent fill:#6C63FF
-    style Resume fill:#4A90E2
-    style JobSearch fill:#FFB81C
-    Style Interview fill:#7B68EE
+    style Intent fill:#6C63FF;
+    style Resume fill:#4A90E2;
+    style JobSearch fill:#FFB81C;
+    style Interview fill:#7B68EE
 ```
 
 ### System Components
