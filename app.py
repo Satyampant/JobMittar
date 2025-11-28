@@ -61,18 +61,22 @@ apply_styling()
 
 # Application header with gradient 
 st.markdown(f"""
-<div style='text-align:center; padding: 1.5rem 0; 
-background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}, {COLORS["tertiary"]}); 
-border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>
-    <h1 style='color: white; font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);'>
-    Professional Job Search Assistant</h1>
-    <p style='color: white; font-size: 1.2rem; font-weight: 500; margin: 0.5rem 2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);'>
-    <span style='background-color: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; margin: 0 5px;'>
-    AI-powered job search</span> 
-    <span style='background-color: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; margin: 0 5px;'>
-    Resume analysis</span> 
-    <span style='background-color: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; margin: 0 5px;'>
-    Interview preparation</span>
+<div style='text-align:center; padding: 2rem 0; 
+background: linear-gradient(135deg, {COLORS["primary"]}, {COLORS["secondary"]}, {COLORS["accent2"]}); 
+border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 6px 20px rgba(255, 184, 28, 0.4);'>
+    <h1 style='color: #1A1D23; font-size: 2.8rem; margin-bottom: 0.5rem; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); font-weight: 700;'>
+    💼 A Smarter Way to Get Hired</h1>
+    <h5 style='color: #1A1D23; font-size: 1.2rem; margin-bottom: 0.5rem;'>
+    Analyze your resume, find the right roles, and practice interviews — all in one place.</h5>
+    <p style='color: #1A1D23; font-size: 1.2rem; font-weight: 600; margin: 0.5rem 2rem; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);'>
+    <span style='background-color: rgba(0,0,0,0.1); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
+    🚀 Targeted Job Discovery</span> 
+    <span style='background-color: rgba(0,0,0,0.1); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
+    📝 Resume Power-Up</span> 
+    <span style='background-color: rgba(0,0,0,0.1); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
+    🎙️ Interview preparation</span>
     </p>
 </div>
 """, unsafe_allow_html=True)

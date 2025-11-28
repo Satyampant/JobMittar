@@ -19,20 +19,23 @@ class QuestionCard:
         question_text = question.get('question', 'Question not available')
         question_category = question.get('category', 'General')
         
-        # Question card
+        # Question card with gold accent
         st.markdown(f"""
-        <div style="background-color: #111111; border-radius: 10px; padding: 20px; 
-        margin-bottom: 20px; border-left: 4px solid {COLORS['accent3']};">
-            <h3 style="color: {COLORS['primary']}; margin-top: 0;">
+        <div style="background-color: {COLORS['card_bg']}; border-radius: 10px; 
+        padding: 20px; margin-bottom: 20px; border-left: 4px solid {COLORS['primary']}; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+            <h3 style="color: {COLORS['primary']}; margin-top: 0; font-weight: 600;">
             Question {question_number} of {total_questions}</h3>
-            <p style="font-size: 1.1rem; line-height: 1.6; color: #333;">{question_text}</p>
-            <span style="background-color: {COLORS['secondary']}; color: white; 
-            padding: 5px 12px; border-radius: 15px; font-weight: bold;">
+            <p style="font-size: 1.1rem; line-height: 1.6; color: {COLORS['text']};">
+            {question_text}</p>
+            <span style="background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}); 
+            color: #1A1D23; padding: 6px 14px; border-radius: 15px; font-weight: bold; 
+            box-shadow: 0 2px 6px rgba(255, 184, 28, 0.3);">
             {question_category}</span>
         </div>
         """, unsafe_allow_html=True)
         
-        # Audio controls
+        # Audio controls remain the same
         col1, col2, col3 = st.columns([1, 1, 1])
         
         with col1:

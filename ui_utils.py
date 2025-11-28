@@ -1,39 +1,39 @@
-"""UI utilities for maintaining legacy visual design with modern backend."""
+"""UI utilities for maintaining professional Gold/Amber theme with dark mode."""
 
 import streamlit as st
 
-# Color palette (exact match from legacy code)
+# UPDATED Color palette - Gold/Amber Professional Theme
 COLORS = {
-    # Primary palette
-    "primary": "#1C4E80",
-    "secondary": "#0091D5",
-    "tertiary": "#6BB4C0",
+    # Primary palette - Gold/Amber based
+    "primary": "#FFB81C",      # Vibrant Gold (main accent)
+    "secondary": "#FFA500",    # Orange-Gold (secondary accent)
+    "tertiary": "#FFD700",     # Lighter Gold (tertiary accent)
 
-    # Accent colors
-    "accent": "#F17300",
-    "accent1": "#3E7CB1",
-    "accent2": "#44BBA4",
-    "accent3": "#F17300",
+    # Accent colors - Complementary warm tones
+    "accent": "#FF8C00",       # Dark Orange
+    "accent1": "#F4A460",      # Sandy Brown
+    "accent2": "#DAA520",      # Goldenrod
+    "accent3": "#FF8C00",      # Dark Orange (matches accent)
 
-    # Functional colors
-    "success": "#26A69A",
-    "warning": "#F9A825",
-    "error": "#E53935",
-    "info": "#0277BD",
+    # Functional colors - Status indicators
+    "success": "#4CAF50",      # Green (keep for success)
+    "warning": "#FF9800",      # Amber warning
+    "error": "#F44336",        # Red (keep for errors)
+    "info": "#FFB81C",         # Gold for info (matches primary)
 
-    # Background and text
-    "background": "#F5F7FA",
-    "card_bg": "#FFFFFF",
-    "text": "#FFFFFF",
-    "text_dark": "#000000",
-    "text_light": "#333333",
-    "text_red": "#FF5252",
-    "panel_bg": "#F0F5FF"
+    # Background and text - Dark mode optimized
+    "background": "#0E1117",   # Dark background
+    "card_bg": "#1F2430",      # Card/container background
+    "text": "#FAFAFA",         # Light text
+    "text_dark": "#FAFAFA",    # Light text (for dark backgrounds)
+    "text_light": "#E0E0E0",   # Slightly dimmed text
+    "text_red": "#FF5252",     # Error text
+    "panel_bg": "#1A1D23"      # Panel background (darker than card)
 }
 
 
 def apply_styling():
-    """Apply custom CSS styling (exact match from legacy code)."""
+    """Apply custom CSS styling with Gold/Amber theme."""
     st.markdown(f"""
     <style>
         /* Global font styling */
@@ -41,52 +41,52 @@ def apply_styling():
             font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
         }}
 
-        /* Main header styling */
+        /* Main header styling - Gold gradient */
         h1, h2, .main-header {{
             color: white !important;
-            background-color: {COLORS['primary']} !important;
+            background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}) !important;
             padding: 20px !important;
             border-radius: 8px !important;
             margin-bottom: 20px !important;
             font-weight: bold !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 12px rgba(255, 184, 28, 0.3) !important;
         }}
 
-        /* Blue header panels styling */
+        /* Gold header panels styling */
         div[style*="background-color: {COLORS['primary']}"],
-        div[style*="background-color: rgb(28, 78, 128)"],
         [data-testid="stForm"] h3,
-        .blue-header {{
-            color: white !important;
+        .gold-header {{
+            color: #1A1D23 !important;  /* Dark text on gold background */
             font-size: 1.2rem !important;
             font-weight: bold !important;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3) !important;
+            text-shadow: none !important;
             padding: 15px !important;
             border-radius: 6px !important;
             margin-bottom: 15px !important;
             background-color: {COLORS['primary']} !important;
+            box-shadow: 0 2px 8px rgba(255, 184, 28, 0.4) !important;
         }}
 
-        /* Fix for text in blue panels */
+        /* Fix for text in gold panels - use dark text for contrast */
         div[style*="background-color: {COLORS['primary']}"] p,
         div[style*="background-color: {COLORS['primary']}"] span,
         div[style*="background-color: {COLORS['primary']}"] h3,
         div[style*="background-color: {COLORS['primary']}"] h4,
         div[style*="background-color: {COLORS['primary']}"] div {{
-            color: white !important;
+            color: #1A1D23 !important;
             font-weight: bold !important;
         }}
 
-        /* Buttons styled */
+        /* Buttons styled with gold */
         .stButton>button,
         button[kind="primary"] {{
-            background-color: {COLORS["accent3"]} !important;
-            color: white !important;
+            background-color: {COLORS["primary"]} !important;
+            color: #1A1D23 !important;
             font-weight: bold !important;
-            border-radius: 4px !important;
-            padding: 0.5rem 1rem !important;
+            border-radius: 6px !important;
+            padding: 0.6rem 1.2rem !important;
             border: none !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 12px rgba(255, 184, 28, 0.4) !important;
             transition: all 0.3s ease !important;
             width: 100% !important;
             font-size: 16px !important;
@@ -95,9 +95,19 @@ def apply_styling():
 
         .stButton>button:hover,
         button[kind="primary"]:hover {{
-            background-color: #E67E22 !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
-            transform: translateY(-1px) !important;
+            background-color: {COLORS["secondary"]} !important;
+            box-shadow: 0 6px 16px rgba(255, 184, 28, 0.6) !important;
+            transform: translateY(-2px) !important;
+        }}
+
+        /* Slider styling */
+        .stSlider > div > div > div > div {{
+            background-color: {COLORS["primary"]} !important;
+        }}
+
+        /* Progress bar */
+        .stProgress > div > div > div {{
+            background-color: {COLORS["primary"]} !important;
         }}
 
         /* Tables */
@@ -107,13 +117,13 @@ def apply_styling():
             margin-bottom: 20px !important;
             border-radius: 4px !important;
             overflow: hidden !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
         }}
 
-        /* Table headers */
+        /* Table headers - Gold theme */
         th, thead tr th {{
-            background-color: #222222 !important;
-            color: white !important;
+            background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}) !important;
+            color: #1A1D23 !important;
             font-weight: bold !important;
             padding: 12px 8px !important;
             text-align: left !important;
@@ -123,27 +133,27 @@ def apply_styling():
         /* Table cells */
         td, tbody tr td {{
             padding: 12px 8px !important;
-            border-bottom: 1px solid #EEEEEE !important;
-            background-color: white !important;
-            color: black !important;
+            border-bottom: 1px solid #2A2E38 !important;
+            background-color: {COLORS['card_bg']} !important;
+            color: {COLORS['text']} !important;
         }}
 
         /* Alternate row styling */
         tbody tr:nth-child(even) td {{
-            background-color: #f9f9f9 !important;
+            background-color: #262A34 !important;
         }}
 
-        /* Tab navigation */
+        /* Tab navigation with gold accents */
         div[data-baseweb="tab-list"] {{
             gap: 0 !important;
-            background-color: {COLORS["background"]} !important;
+            background-color: {COLORS["card_bg"]} !important;
             padding: 10px !important;
             border-radius: 12px !important;
             display: flex !important;
             justify-content: space-between !important;
             width: 100% !important;
             margin-bottom: 20px !important;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
         }}
 
         div[data-baseweb="tab-list"] button {{
@@ -152,26 +162,80 @@ def apply_styling():
             margin: 0 5px !important;
             height: 60px !important;
             font-size: 16px !important;
-            background-color: rgba(255, 255, 255, 0.7) !important;
-            color: {COLORS["primary"]} !important;
+            background-color: #262A34 !important;
+            color: {COLORS["text_light"]} !important;
             border-radius: 8px !important;
-            border: 1px solid rgba(0,0,0,0.05) !important;
+            border: 1px solid #3A3E48 !important;
             transition: all 0.3s ease !important;
         }}
 
         div[data-baseweb="tab-list"] button[aria-selected="true"] {{
-            background-color: {COLORS["primary"]} !important;
-            color: white !important;
-            border-bottom: 3px solid {COLORS["accent3"]} !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            background: linear-gradient(135deg, {COLORS["primary"]}, {COLORS["secondary"]}) !important;
+            color: #1A1D23 !important;
+            border: none !important;
+            box-shadow: 0 4px 16px rgba(255, 184, 28, 0.5) !important;
             transform: translateY(-2px) !important;
+        }}
+
+        div[data-baseweb="tab-list"] button:hover:not([aria-selected="true"]) {{
+            background-color: #363A44 !important;
+            border-color: {COLORS["primary"]} !important;
+        }}
+
+        /* Input fields */
+        .stTextInput > div > div > input,
+        .stTextArea > div > div > textarea,
+        .stSelectbox > div > div {{
+            background-color: {COLORS['card_bg']} !important;
+            color: {COLORS['text']} !important;
+            border: 1px solid #3A3E48 !important;
+            border-radius: 4px !important;
+        }}
+
+        .stTextInput > div > div > input:focus,
+        .stTextArea > div > div > textarea:focus {{
+            border-color: {COLORS['primary']} !important;
+            box-shadow: 0 0 0 2px rgba(255, 184, 28, 0.2) !important;
+        }}
+
+        /* Sidebar styling */
+        section[data-testid="stSidebar"] {{
+            background-color: {COLORS['card_bg']} !important;
+        }}
+
+        /* Links with gold color */
+        a {{
+            color: {COLORS['primary']} !important;
+            text-decoration: none !important;
+        }}
+
+        a:hover {{
+            color: {COLORS['secondary']} !important;
+            text-decoration: underline !important;
+        }}
+
+        /* Expander with gold accent */
+        .streamlit-expanderHeader {{
+            background-color: {COLORS['card_bg']} !important;
+            border-left: 3px solid {COLORS['primary']} !important;
+        }}
+
+        /* Success/Info/Warning boxes */
+        .stAlert {{
+            border-left-width: 4px !important;
+        }}
+
+        /* Info alert with gold */
+        div[data-baseweb="notification"][kind="info"] {{
+            background-color: rgba(255, 184, 28, 0.1) !important;
+            border-left-color: {COLORS['primary']} !important;
         }}
     </style>
     """, unsafe_allow_html=True)
 
 
 def display_resume_analysis_summary(resume_data):
-    """Display AI-generated resume summary."""
+    """Display AI-generated resume summary with Gold theme."""
     if not resume_data:
         st.warning("Resume data is not available.")
         return
@@ -184,58 +248,64 @@ def display_resume_analysis_summary(resume_data):
 
     st.subheader("Resume Analysis Summary")
     
-    # Overall Assessment
+    # Overall Assessment with gold gradient
     if analysis.get("overall_assessment"):
         st.markdown(f"""
-        <div style="background-color: {COLORS['primary']}; color: white; padding: 15px; 
-        border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-        <h4 style="margin: 0 0 10px 0; color: white;">📊 Overall Assessment</h4>
-        <p style="margin: 0; line-height: 1.6;">{analysis['overall_assessment']}</p>
+        <div style="background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}); 
+        color: #1A1D23; padding: 20px; border-radius: 10px; margin-bottom: 20px; 
+        box-shadow: 0 4px 16px rgba(255, 184, 28, 0.3);">
+        <h4 style="margin: 0 0 10px 0; color: #1A1D23;">📊 Overall Assessment</h4>
+        <p style="margin: 0; line-height: 1.6; font-weight: 500;">{analysis['overall_assessment']}</p>
         </div>
         """, unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("""<h4 style="color: #1A237E; margin-bottom: 10px;">💪 Strengths</h4>""", unsafe_allow_html=True)
+        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">💪 Strengths</h4>""", 
+                    unsafe_allow_html=True)
         strengths = analysis.get("strengths", [])
         
         if strengths:
             for strength in strengths:
                 st.markdown(
-                    f"""<div style="background-color: #01579B; color: white; padding: 12px; 
-                    border-radius: 6px; margin-bottom: 10px; font-weight: 500;">
+                    f"""<div style="background: linear-gradient(135deg, {COLORS['success']}, #45A049); 
+                    color: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; 
+                    font-weight: 500; box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);">
                     ✅ {strength}</div>""", 
                     unsafe_allow_html=True
                 )
         else:
             st.markdown(
-                """<div style="background-color: #546E7A; color: white; padding: 12px; 
-                border-radius: 6px;">Analysis unavailable</div>""", 
+                f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text_light']}; 
+                padding: 12px; border-radius: 6px;">Analysis unavailable</div>""", 
                 unsafe_allow_html=True
             )
 
     with col2:
-        st.markdown("""<h4 style="color: #B71C1C; margin-bottom: 10px;">🎯 Areas to Improve</h4>""", unsafe_allow_html=True)
+        st.markdown(f"""<h4 style="color: {COLORS['warning']}; margin-bottom: 10px;">🎯 Areas to Improve</h4>""", 
+                    unsafe_allow_html=True)
         weaknesses = analysis.get("weaknesses", [])
         
         if weaknesses:
             for weakness in weaknesses:
                 st.markdown(
-                    f"""<div style="background-color: #C62828; color: white; padding: 12px; 
-                    border-radius: 6px; margin-bottom: 10px; font-weight: 500;">
+                    f"""<div style="background: linear-gradient(135deg, {COLORS['warning']}, #FB8C00); 
+                    color: #1A1D23; padding: 12px; border-radius: 6px; margin-bottom: 10px; 
+                    font-weight: 500; box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);">
                     ⚠️ {weakness}</div>""", 
                     unsafe_allow_html=True
                 )
         else:
             st.markdown(
-                """<div style="background-color: #546E7A; color: white; padding: 12px; 
-                border-radius: 6px;">Analysis unavailable</div>""", 
+                f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text_light']}; 
+                padding: 12px; border-radius: 6px;">Analysis unavailable</div>""", 
                 unsafe_allow_html=True
             )
 
+
 def display_extracted_information(resume_data):
-    """Display extracted resume info (exact visual match from legacy)."""
+    """Display extracted resume info with Gold theme."""
     if not resume_data:
         st.warning("Resume data is not available.")
         return
@@ -245,26 +315,30 @@ def display_extracted_information(resume_data):
     info_col1, info_col2 = st.columns(2)
 
     with info_col1:
-        # Contact info
-        st.markdown("""<h4 style="color: #333; margin-bottom: 10px;">📞 Contact Information</h4>""", unsafe_allow_html=True)
+        # Contact info with gold accent
+        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">📞 Contact Information</h4>""", 
+                    unsafe_allow_html=True)
         contact_info = resume_data.get("contact_info", {})
-        contact_html = """<div style="background-color: #1A237E; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">"""
+        contact_html = f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
+        padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid {COLORS['primary']};">"""
 
         if contact_info and (contact_info.get("email") or contact_info.get("phone")):
             if contact_info.get("email"):
-                contact_html += f"<p><strong>Email:</strong> {contact_info['email']}</p>"
+                contact_html += f"<p><strong style='color: {COLORS['primary']}'>Email:</strong> {contact_info['email']}</p>"
             if contact_info.get("phone"):
-                contact_html += f"<p><strong>Phone:</strong> {contact_info['phone']}</p>"
+                contact_html += f"<p><strong style='color: {COLORS['primary']}'>Phone:</strong> {contact_info['phone']}</p>"
         else:
             contact_html += "<p>No contact information detected.</p>"
 
         contact_html += "</div>"
         st.markdown(contact_html, unsafe_allow_html=True)
 
-        # Education
-        st.markdown("""<h4 style="color: #333; margin-bottom: 10px;">🎓 Education</h4>""", unsafe_allow_html=True)
+        # Education with gold accent
+        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">🎓 Education</h4>""", 
+                    unsafe_allow_html=True)
         education = resume_data.get("education", [])
-        education_html = """<div style="background-color: #4A148C; color: white; padding: 15px; border-radius: 8px;">"""
+        education_html = f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
+        padding: 15px; border-radius: 8px; border-left: 4px solid {COLORS['secondary']};">"""
 
         if education:
             for edu in education:
@@ -276,53 +350,57 @@ def display_extracted_information(resume_data):
         st.markdown(education_html, unsafe_allow_html=True)
 
     with info_col2:
-        # Skills
-        st.markdown("""<h4 style="color: #333; margin-bottom: 10px;">🛠️ Skills</h4>""", unsafe_allow_html=True)
+        # Skills with gold badges
+        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">🛠️ Skills</h4>""", 
+                    unsafe_allow_html=True)
         skills = resume_data.get("skills", [])
 
         if skills:
             skills_html = """<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">"""
             for skill in skills:
-                skills_html += f"""<div style="background-color: #0D47A1; color: white; 
-                padding: 8px 12px; border-radius: 20px; font-weight: 500; margin-bottom: 8px;">
+                skills_html += f"""<div style="background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}); 
+                color: #1A1D23; padding: 8px 14px; border-radius: 20px; font-weight: 600; 
+                margin-bottom: 8px; box-shadow: 0 2px 6px rgba(255, 184, 28, 0.3);">
                 {skill}</div>"""
             skills_html += "</div>"
             st.markdown(skills_html, unsafe_allow_html=True)
         else:
             st.markdown(
-                """<div style="background-color: #546E7A; color: white; padding: 15px; 
-                border-radius: 8px;">No skills detected.</div>""", 
+                f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text_light']}; 
+                padding: 15px; border-radius: 8px;">No skills detected.</div>""", 
                 unsafe_allow_html=True
             )
 
-        # Experience
-        st.markdown("""<h4 style="color: #333; margin-bottom: 10px;">💼 Experience</h4>""", unsafe_allow_html=True)
+        # Experience with gold accent
+        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">💼 Experience</h4>""", 
+                    unsafe_allow_html=True)
         experience = resume_data.get("experience", [])
 
         if experience:
-            exp_html = """<div style="background-color: #01579B; color: white; padding: 15px; border-radius: 8px;">"""
-            for exp in experience[:3]:  # Show top 3
+            exp_html = f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
+            padding: 15px; border-radius: 8px; border-left: 4px solid {COLORS['accent1']};">"""
+            for exp in experience[:3]:
                 exp_html += f"<p>• {exp[:100]}...</p>"
             exp_html += "</div>"
             st.markdown(exp_html, unsafe_allow_html=True)
         else:
             st.markdown(
-                """<div style="background-color: #546E7A; color: white; padding: 15px; 
-                border-radius: 8px;">No experience information detected.</div>""", 
+                f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text_light']}; 
+                padding: 15px; border-radius: 8px;">No experience information detected.</div>""", 
                 unsafe_allow_html=True
             )
 
 
 def display_formatted_analysis(analysis):
-    """Display AI-generated formatted resume analysis."""
+    """Display AI-generated formatted resume analysis with Gold theme."""
     if not analysis or not isinstance(analysis, dict):
         st.info("Detailed analysis is not available.")
         return
 
     section_configs = [
-        ("content_improvements", "Content Improvements", "#1b3a4b", "📝"),
-        ("format_suggestions", "Format Suggestions", "#4d194d", "🎨"),
-        ("ats_optimization", "ATS Optimization", "#54478c", "🤖")
+        ("content_improvements", "Content Improvements", COLORS['accent1'], "📝"),
+        ("format_suggestions", "Format Suggestions", COLORS['accent2'], "🎨"),
+        ("ats_optimization", "ATS Optimization", COLORS['secondary'], "🤖")
     ]
 
     for key, title, color, icon in section_configs:
@@ -331,57 +409,29 @@ def display_formatted_analysis(analysis):
             st.subheader(f"{icon} {title}")
             content = "\n".join(f"• {item}" for item in items)
             st.markdown(
-                f"""<div style='background-color: {color}; color: white; 
-                padding: 15px; border-radius: 8px; margin-top: 10px; 
-                font-size: 16px; line-height: 1.8;'>{content}</div>""", 
+                f"""<div style='background: linear-gradient(135deg, {color}, {COLORS["primary"]}); 
+                color: #1A1D23; padding: 18px; border-radius: 8px; margin-top: 10px; 
+                font-size: 16px; line-height: 1.8; font-weight: 500; 
+                box-shadow: 0 4px 12px rgba(255, 184, 28, 0.3);'>{content}</div>""", 
                 unsafe_allow_html=True
             )
 
+
 def format_job_description(description):
-    """Format job description (exact visual match from legacy)."""
+    """Format job description with Gold theme."""
     if not description:
-        return """<div style="background-color: #455A64; color: white; padding: 15px; 
-                border-radius: 8px; margin-top: 15px;">No description available</div>"""
+        return f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text_light']}; 
+                padding: 15px; border-radius: 8px; margin-top: 15px;">No description available</div>"""
 
     description = description.replace('\n\n', '<br><br>').replace('\n', '<br>')
 
     formatted_description = f"""
-    <div style="background-color: #263238; color: white; padding: 15px; 
-    border-radius: 8px; margin-top: 15px; line-height: 1.5; font-size: 16px;">
+    <div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
+    padding: 20px; border-radius: 10px; margin-top: 15px; line-height: 1.6; 
+    font-size: 16px; border-left: 4px solid {COLORS['primary']}; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
         {description}
     </div>
     """
 
     return formatted_description
-
-
-# def display_matching_skills(skills, job_description):
-#     """Display matching skills (exact visual match from legacy)."""
-#     if not skills or not job_description:
-#         st.markdown(
-#             """<div style="background-color: #455A64; color: white; padding: 12px; 
-#             border-radius: 6px;">No matching skills could be determined.</div>""", 
-#             unsafe_allow_html=True
-#         )
-#         return
-
-#     job_desc = job_description.lower()
-#     matching_skills = [skill for skill in skills if skill.lower() in job_desc]
-
-#     if matching_skills:
-#         st.markdown("""<h4 style="color: #1A237E; margin-bottom: 10px;">Skills Matching Job Description</h4>""", unsafe_allow_html=True)
-#         skills_html = """<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">"""
-
-#         for skill in matching_skills[:5]:
-#             skills_html += f"""<div style="background-color: #01579B; color: white; 
-#             padding: 8px 12px; border-radius: 20px; font-weight: 500; margin-bottom: 8px;">
-#             ✅ {skill}</div>"""
-
-#         skills_html += "</div>"
-#         st.markdown(skills_html, unsafe_allow_html=True)
-#     else:
-#         st.markdown(
-#             """<div style="background-color: #455A64; color: white; padding: 12px; 
-#             border-radius: 6px;">No matching skills detected.</div>""", 
-#             unsafe_allow_html=True
-#         )

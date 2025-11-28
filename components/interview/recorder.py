@@ -12,14 +12,15 @@ class ResponseRecorder:
         """Render recorder with instructions."""
         st.markdown("### 🎤 Your Response")
         st.markdown(f"""
-        <div style="background-color: {COLORS['panel_bg']}; padding: 15px; 
-        border-radius: 8px; margin-bottom: 15px;">
-        <p>Click <strong>Start Recording</strong> to begin your answer. 
-        Click <strong>Stop Recording</strong> when you're done.</p>
+        <div style="background-color: {COLORS['card_bg']}; padding: 15px; 
+        border-radius: 8px; margin-bottom: 15px; border-left: 3px solid {COLORS['primary']};">
+        <p style="color: {COLORS['text']};">Click <strong style="color: {COLORS['primary']}">
+        Start Recording</strong> to begin your answer. 
+        Click <strong style="color: {COLORS['primary']}">Stop Recording</strong> when you're done.</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Recorder
+        # Recorder (unchanged)
         audio = mic_recorder(
             start_prompt="🎙️ Start Recording",
             stop_prompt="⏹️ Stop Recording",
@@ -27,8 +28,5 @@ class ResponseRecorder:
         )
         
         if audio:
-            # Show audio playback
             st.audio(audio['bytes'])
-            
-            # Process response
             on_audio_recorded(audio['bytes'])

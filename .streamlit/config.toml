@@ -1,0 +1,30 @@
+[theme]
+# Base theme - "light" or "dark"
+base = "dark"
+
+# Primary color for interactive elements (Gold/Amber)
+primaryColor = "#FFB81C"
+
+# Background color for the main content area (Dark mode default)
+backgroundColor = "#0E1117"
+
+# Background color for sidebar and most interactive widgets
+secondaryBackgroundColor = "#1F2430"
+
+# Text color
+textColor = "#FAFAFA"
+
+# Font family
+font = "sans serif"
+
+[server]
+# Enable file watcher for hot reloading during development
+fileWatcherType = "auto"
+
+[browser]
+# Gather usage stats
+gatherUsageStats = false
+
+[client]
+# Show error details
+showErrorDetails = true
