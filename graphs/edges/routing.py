@@ -40,14 +40,7 @@ def route_by_intent(state: JobMittrState) -> Literal["parse_resume", "search_job
 
 
 def route_after_resume(state: JobMittrState) -> Literal["job_search", "complete", "error"]:
-    """Route after resume processing completes.
-    
-    Args:
-        state: Current workflow state after resume analysis
-        
-    Returns:
-        Next step: auto-trigger job search or end
-    """
+    """Route after resume processing completes."""
     if state.get("error"):
         return "error"
     
@@ -56,14 +49,14 @@ def route_after_resume(state: JobMittrState) -> Literal["job_search", "complete"
     
     # Check user preferences for next action
     user_prefs = state.get("user_preferences", {})
-    auto_job_search = user_prefs.get("auto_job_search", True)
+    auto_job_search = user_prefs.get("auto_job_search", False)  # DEFAULT TO FALSE
     
+    # Only route to job_search if BOTH conditions are met
     if auto_job_search and state.get("job_query"):
         return "job_search"
     
-    # Resume complete, await user action
+    # Default: complete the workflow
     return "complete"
-
 
 def route_after_job_selection(state: JobMittrState) -> Literal["analyze_match", "generate_questions", "complete", "error"]:
     """Route after job selection based on user preference.

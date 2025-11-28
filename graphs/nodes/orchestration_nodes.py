@@ -18,6 +18,15 @@ def intent_classifier_node(state: JobMittrState) -> JobMittrState:
     """
     messages = state.get("messages", [])
     
+    if state.get("current_step") == "resume_upload":
+        user_prefs = state.get("user_preferences", {})
+        if not user_prefs.get("auto_job_search", False):
+            return {
+                **state,
+                "current_step": "resume_upload",
+                "error": None
+            }
+
     if not messages:
         return {
             **state,

@@ -95,35 +95,28 @@ def _process_resume_with_graph(resume_file, graph):
                 "job_results": [],
                 "current_step": "resume_upload",
                 "messages": [HumanMessage(content="Process my resume")],
-                "user_preferences": {"auto_job_search": False}
+                "user_preferences": {"auto_job_search": False}  # Prevent auto job search
             }
 
-            # Stream graph execution with real-time updates
-            final_state = None
-            progress_container = st.container()
-            
-            with progress_container:
-                for state_update in stream_to_streamlit(graph, initial_state, thread_id):
-                    final_state = state_update
-                    
-                    # Update session state as we go
-                    if state_update.get("resume_data"):
-                        st.session_state.resume_data = state_update["resume_data"]
+            # USE INVOKE INSTEAD OF STREAM - THIS IS THE FIX
+            final_state = invoke_graph_sync(graph, initial_state, thread_id)
 
-            # Display final state summary
-            if final_state:
-                display_state_summary(final_state)
-                
-                if final_state.get("error"):
-                    st.error(f"Processing failed: {final_state['error']}")
-                else:
-                    st.success("✅ Resume analysis complete!")
-                    st.rerun()
+            # Check for errors
+            if final_state.get("error"):
+                st.error(f"Processing failed: {final_state['error']}")
+                return
+            
+            # Update session state
+            if final_state.get("resume_data"):
+                st.session_state.resume_data = final_state["resume_data"]
+                st.success("✅ Resume analysis complete!")
+                st.rerun()
+            else:
+                st.error("Resume processing completed but no data was extracted.")
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
             st.info("If error persists, try a different file format.")
-
 
 def _render_tips_section():
     """Render resume tips (unchanged)."""
