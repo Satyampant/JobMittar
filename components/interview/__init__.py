@@ -1,4 +1,3 @@
-"""Interview UI components - modular and focused."""
 
 from .session import InterviewSessionController
 from .header import InterviewHeader

@@ -1,4 +1,3 @@
-"""Tab handler modules for main application tabs."""
 
 from .resume_analysis import render_resume_analysis_tab
 from .job_search import render_job_search_tab

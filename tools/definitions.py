@@ -1,4 +1,3 @@
-"""Tool definitions for external API interactions."""
 
 from typing import Dict, Any, List
 from pydantic import BaseModel, Field
@@ -9,7 +8,6 @@ class ToolDefinition(BaseModel):
     description: str
     parameters: Dict[str, Any]
     
-# SERP API Job Search Tool
 search_jobs_tool = {
     "name": "search_jobs",
     "description": "Search for jobs using SERP API. Returns real job listings with titles, companies, descriptions, and application URLs.",
@@ -25,7 +23,6 @@ search_jobs_tool = {
     }
 }
 
-# Job Match Analysis Tool
 analyze_match_tool = {
     "name": "analyze_job_match",
     "description": "Analyze how well a resume matches a job description using Groq LLM. Returns match score, matching skills, gaps, and recommendations.",
@@ -39,7 +36,6 @@ analyze_match_tool = {
     }
 }
 
-# Interview Questions Generation Tool
 generate_questions_tool = {
     "name": "generate_interview_questions",
     "description": "Generate interview questions using Groq LLM based on job description and resume. Returns structured questions with context, tips, and suggested answers.",
@@ -54,7 +50,6 @@ generate_questions_tool = {
     }
 }
 
-# Interview Audio Generation Tool
 generate_audio_tool = {
     "name": "generate_question_audio",
     "description": "Generate text-to-speech audio for an interview question using Groq TTS. Returns audio bytes in MP3 format.",
@@ -68,7 +63,6 @@ generate_audio_tool = {
     }
 }
 
-# Audio Transcription Tool
 transcribe_audio_tool = {
     "name": "transcribe_candidate_response",
     "description": "Transcribe candidate's audio response to text using Deepgram. Accepts audio bytes and returns transcribed text.",
@@ -81,7 +75,6 @@ transcribe_audio_tool = {
     }
 }
 
-# Interview Feedback Generation Tool
 generate_feedback_tool = {
     "name": "generate_interview_feedback",
     "description": "Generate AI-powered feedback for a candidate's interview response using Groq LLM. Returns structured feedback with scores and suggestions.",
@@ -96,7 +89,6 @@ generate_feedback_tool = {
     }
 }
 
-# Resume Analysis Tool
 analyze_resume_tool = {
     "name": "analyze_resume_quality",
     "description": "Analyze resume quality, identify strengths, weaknesses, and provide actionable recommendations using Groq LLM.",
@@ -109,7 +101,6 @@ analyze_resume_tool = {
     }
 }
 
-# Tool Registry for dynamic lookup
 TOOL_REGISTRY = {
     "search_jobs": search_jobs_tool,
     "analyze_job_match": analyze_match_tool,

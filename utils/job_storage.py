@@ -1,4 +1,3 @@
-"""Job storage utilities for saving and loading jobs."""
 
 import os
 import json
@@ -6,12 +5,10 @@ from datetime import datetime
 from typing import Dict, Any, List
 
 
-# Create directory for saved jobs
 os.makedirs("saved_jobs", exist_ok=True)
 
 
 class DateTimeEncoder(json.JSONEncoder):
-    """Custom JSON encoder for datetime objects."""
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.strftime("%Y-%m-%d %H:%M:%S")
@@ -19,30 +16,17 @@ class DateTimeEncoder(json.JSONEncoder):
 
 
 def save_job_to_local(job_data: Dict[str, Any]) -> str:
-    """Save job data to a local JSON file.
-
-    Args:
-        job_data (dict): The job data to save
-
-    Returns:
-        str: Path to the saved file
-    """
-    # Generate a unique filename
     job_id = f"{job_data.get('title', 'job').replace(' ', '_')}_{job_data.get('company', 'company').replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     file_path = os.path.join("saved_jobs", f"{job_id}.json")
 
-    # Add timestamp
     job_data["date_saved"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Create a copy to avoid modifying original
     job_data_copy = job_data.copy()
 
-    # Process datetime objects
     for key, value in job_data_copy.items():
         if isinstance(value, datetime):
             job_data_copy[key] = value.strftime("%Y-%m-%d %H:%M:%S")
 
-    # Save to JSON
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(job_data_copy, f, indent=4, cls=DateTimeEncoder)
 
@@ -74,15 +58,7 @@ def load_saved_jobs() -> List[Dict[str, Any]]:
 
 
 def remove_saved_job(job_title: str, job_company: str) -> bool:
-    """Remove a saved job from local storage.
-
-    Args:
-        job_title (str): Title of the job to remove
-        job_company (str): Company of the job to remove
-
-    Returns:
-        bool: True if successfully removed
-    """
+    
     for file_name in os.listdir("saved_jobs"):
         if file_name.endswith(".json"):
             file_path = os.path.join("saved_jobs", file_name)

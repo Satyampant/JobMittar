@@ -1,4 +1,3 @@
-"""Resume Analysis tab handler."""
 
 import streamlit as st
 import tempfile
@@ -17,10 +16,8 @@ from ui_utils import (
 
 
 def render_resume_analysis_tab():
-    """Render the Resume Analysis tab."""
     st.header("Resume Analysis")
 
-    # Create two columns for upload options
     col1, col2 = st.columns(2)
 
     with col1:
@@ -29,7 +26,6 @@ def render_resume_analysis_tab():
     with col2:
         _render_tips_section()
 
-    # Display resume analysis results
     if st.session_state.get("resume_data"):
         _render_analysis_results()
     else:
@@ -37,16 +33,16 @@ def render_resume_analysis_tab():
 
 
 def _render_upload_section():
-    """Render resume upload section."""
     st.subheader("Upload Resume")
     st.markdown(f"""
-    <div style="background-color: {COLORS["panel_bg"]}; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <div style="background: linear-gradient(135deg, {COLORS["card_bg"]}, #262A34); 
+    padding: 15px; border-radius: 8px; margin-bottom: 20px; 
+    border-left: 3px solid {COLORS['secondary']};">
     <p style="margin-bottom: 10px;">Upload your resume in PDF, DOCX, or TXT format.</p>
     <p>We'll analyze your resume and extract key information to help you find matching jobs.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Resume file uploader
     resume_file = st.file_uploader(
         "Upload your resume", 
         type=["pdf", "txt", "docx"], 
@@ -58,10 +54,8 @@ def _render_upload_section():
 
 
 def _process_resume_file(resume_file):
-    """Process uploaded resume file."""
     with st.spinner("Analyzing your resume..."):
         try:
-            # Save uploaded file to temporary location
             with tempfile.NamedTemporaryFile(
                 delete=False, 
                 suffix=f".{resume_file.name.split('.')[-1]}"
@@ -69,20 +63,16 @@ def _process_resume_file(resume_file):
                 temp_file.write(resume_file.getbuffer())
                 temp_path = temp_file.name
 
-            # Read file using backend file reader
             extracted_text = read_resume_file(temp_path)
 
-            # Clean up temporary file
             try:
                 os.unlink(temp_path)
             except:
                 pass
 
             if extracted_text:
-                # Parse resume using Pydantic-based extractor
                 resume: Resume = extract_resume(extracted_text)
 
-                # Convert Pydantic model to dict for session state
                 resume_dict = {
                     "name": resume.name,
                     "email": resume.email,
@@ -95,11 +85,9 @@ def _process_resume_file(resume_file):
                     "contact_info": {"email": resume.email, "phone": resume.phone or ""}
                 }
 
-                # Generate analysis
                 analysis = _generate_resume_analysis(resume)
                 resume_dict["analysis"] = analysis
 
-                # Store in session state
                 st.session_state.resume_data = resume_dict
 
                 st.success("Resume analysis complete! Review the extracted information and analysis below.")
@@ -112,10 +100,8 @@ def _process_resume_file(resume_file):
 
 
 def _generate_resume_analysis(resume: Resume) -> Dict[str, Any]:
-    """Generate AI-powered analysis from resume data using backend tool."""
     from tools.executor import execute_tool
     
-    # Convert Resume model to dict for tool execution
     resume_dict = {
         "name": resume.name,
         "email": resume.email,
@@ -131,7 +117,6 @@ def _generate_resume_analysis(resume: Resume) -> Dict[str, Any]:
     if result.get("success"):
         return result["result"]
     else:
-        # Fallback analysis if tool fails
         return {
             "overall_assessment": "Unable to generate detailed analysis at this time.",
             "strengths": ["Resume uploaded successfully"],
@@ -143,10 +128,11 @@ def _generate_resume_analysis(resume: Resume) -> Dict[str, Any]:
 
 
 def _render_tips_section():
-    """Render resume tips section."""
     st.subheader("Resume Tips")
     st.markdown(f"""
-    <div style="background-color: {COLORS["accent1"]}; color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="background: linear-gradient(135deg, {COLORS['secondary']}, {COLORS['accent1']}); 
+    color: white; padding: 15px; border-radius: 8px; 
+    box-shadow: 0 2px 5px rgba(108, 99, 255, 0.3);">
     <h4 style="margin-top: 0; color: white;">Key Resume Components:</h4>
     <ul style="margin-bottom: 0;">
     <li><strong>Clear contact information</strong> - Make it easy for employers to reach you</li>
@@ -158,9 +144,10 @@ def _render_tips_section():
     </div>
     """, unsafe_allow_html=True)
 
-    # ATS optimization tips
     st.markdown(f"""
-    <div style="background-color: {COLORS["secondary"]}; color: white; padding: 15px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <div style="background: linear-gradient(135deg, {COLORS['tertiary']}, {COLORS['accent']}); 
+    color: white; padding: 15px; border-radius: 8px; margin-top: 15px; 
+    box-shadow: 0 2px 5px rgba(74, 144, 226, 0.3);">
     <h4 style="margin-top: 0; color: white;">ATS Optimization Tips:</h4>
     <ul style="margin-bottom: 0;">
     <li>Use keywords from the job description</li>
@@ -177,7 +164,6 @@ def _render_analysis_results():
     """Display resume analysis results."""
     st.markdown("---")
 
-    # Create tabs for different views
     resume_tabs = st.tabs(["Summary", "Skills & Experience", "Analysis", "Raw Text"])
 
     with resume_tabs[0]:
@@ -205,7 +191,6 @@ def _render_analysis_results():
 
 
 def _render_empty_state():
-    """Render empty state when no resume is uploaded."""
     st.markdown(f"""
     <div style="background-color: {COLORS["background"]}; padding: 20px; border-radius: 8px; 
     border: 1px dashed {COLORS["primary"]}; text-align: center; margin-top: 30px;">

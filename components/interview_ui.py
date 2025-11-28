@@ -1,5 +1,3 @@
-"""Refactored Interview UI - thin coordinator delegating to specialized components."""
-
 import streamlit as st
 import base64
 from typing import Dict, Any
@@ -14,7 +12,6 @@ from components.interview.report import FinalReport
 
 
 class InterviewUI:
-    """Main UI coordinator - delegates to specialized components (thin layer)."""
     
     def __init__(self):
         self.controller = InterviewSessionController()
@@ -35,11 +32,9 @@ class InterviewUI:
         self.controller.start_session(job_data, questions, interview_type)
     
     def render_interview_header(self):
-        """Render header component."""
         self.header.render(st.session_state.interview_session)
     
     def render_current_question(self):
-        """Render question card component."""
         session = st.session_state.interview_session
         if not session or session.current_question_index >= len(session.questions):
             return
@@ -54,11 +49,9 @@ class InterviewUI:
         )
     
     def render_response_recorder(self):
-        """Render recorder component."""
         self.recorder.render(on_audio_recorded=self._process_audio_response)
     
     def render_navigation_buttons(self):
-        """Render navigation component."""
         session = st.session_state.interview_session
         
         self.navigation.render(
@@ -69,14 +62,12 @@ class InterviewUI:
         )
     
     def render_final_report(self):
-        """Render final report component."""
         self.controller.finish_session()
         self.report.render(st.session_state.interview_session)
     
     # Private helper methods (callbacks)
     
     def _play_question_audio(self, question_text: str, question_type: str, volume: float):
-        """Generate and play question audio."""
         try:
             with st.spinner("Generating audio..."):
                 audio_bytes = self.controller.generate_question_audio(question_text, question_type)
@@ -98,7 +89,6 @@ class InterviewUI:
             st.error(f"Failed to generate audio: {str(e)}")
     
     def _process_audio_response(self, audio_bytes: bytes):
-        """Process audio response via controller."""
         with st.spinner("Transcribing your response..."):
             try:
                 result = self.controller.process_audio_response(audio_bytes)
@@ -114,13 +104,11 @@ class InterviewUI:
                 st.error(f"Error processing response: {str(e)}")
     
     def _navigate_previous(self):
-        """Navigate to previous question."""
         session = st.session_state.interview_session
         self.controller.navigate_to_question(session.current_question_index - 1)
         st.rerun()
     
     def _navigate_next(self):
-        """Navigate to next question."""
         session = st.session_state.interview_session
         self.controller.navigate_to_question(session.current_question_index + 1)
         st.rerun()

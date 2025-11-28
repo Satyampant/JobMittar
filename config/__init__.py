@@ -1,4 +1,3 @@
-"""Configuration management with environment-based loading."""
 
 from .settings import get_settings, Settings
 

@@ -1,4 +1,3 @@
-"""Interview Preparation tab handler."""
 
 import streamlit as st
 
@@ -8,11 +7,9 @@ from ui_utils import COLORS
 
 
 def render_interview_prep_tab():
-    """Render the Interview Preparation tab."""
     st.header("Interview Preparation")
 
     if st.session_state.get("selected_job"):
-        # Check if interview session is active
         if st.session_state.get('interview_session') and st.session_state.interview_session.is_active:
             _render_active_interview()
         else:
@@ -22,7 +19,6 @@ def render_interview_prep_tab():
 
 
 def _render_active_interview():
-    """Render active interview session."""
     interview_ui = InterviewUI()
     
     interview_ui.render_interview_header()
@@ -32,12 +28,11 @@ def _render_active_interview():
 
 
 def _render_interview_setup():
-    """Render interview setup interface."""
     selected_job = st.session_state.selected_job
 
     st.markdown(f"""
-    <div style='background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}); 
-    padding: 1rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 3px 10px rgba(0,0,0,0.15);'>
+    <div style='background: linear-gradient(90deg, {COLORS["secondary"]}, {COLORS["tertiary"]}); 
+    padding: 1rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 3px 10px rgba(108, 99, 255, 0.3);'>
         <h3 style='color: white; margin: 0; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);'>
         Prepare for: {selected_job.get('title', 'Unknown')}</h3>
         <p style='color: white; font-size: 1.1rem; margin: 0.5rem 0 0 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);'>
@@ -53,7 +48,6 @@ def _render_interview_setup():
     with col2:
         _render_interview_tips()
 
-    # Display generated questions if available
     if st.session_state.get('interview_questions') and not st.session_state.get('interview_session'):
         _render_review_mode_questions()
 
@@ -68,7 +62,6 @@ def _render_setup_controls():
 
     num_questions = st.slider("Number of questions:", 5, 20, 10, key="num_interview_questions")
 
-    # Two modes: Generate and Review OR Start Live Interview
     mode_col1, mode_col2 = st.columns(2)
     
     with mode_col1:
@@ -85,13 +78,12 @@ def _render_setup_controls():
 
 
 def _render_interview_tips():
-    """Render interview tips."""
-    st.subheader("Quick Tips")
     st.markdown(f"""
-    <div style="background-color: {COLORS["primary"]}; color: white; padding: 15px; 
-    border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h4 style="margin-top: 0; font-weight: 600; margin-bottom: 10px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">
-    Interview Tips:</h4>
+    <div style="background: linear-gradient(135deg, {COLORS["secondary"]}, {COLORS["accent1"]}); 
+    color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; 
+    box-shadow: 0 2px 5px rgba(108, 99, 255, 0.3);">
+    <h4 style="margin-top: 0; font-weight: 600; margin-bottom: 10px; color: white; 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">Interview Tips:</h4>
     <ul style="margin-bottom: 0; padding-left: 20px;">
     <li>Research the company thoroughly</li>
     <li>Prepare specific examples using STAR method</li>
@@ -104,7 +96,6 @@ def _render_interview_tips():
 
 
 def _generate_interview_questions(num_questions: int):
-    """Generate interview questions for review."""
     with st.spinner("Generating interview questions..."):
         try:
             result = execute_tool("generate_interview_questions", {
@@ -129,10 +120,8 @@ def _generate_interview_questions(num_questions: int):
 
 
 def _start_live_interview(interview_type: str, num_questions: int):
-    """Start live interview session."""
     with st.spinner("Preparing your live interview..."):
         try:
-            # Generate questions if not already generated
             if not st.session_state.get('interview_questions'):
                 result = execute_tool("generate_interview_questions", {
                     "job_data": st.session_state.selected_job,
@@ -148,7 +137,6 @@ def _start_live_interview(interview_type: str, num_questions: int):
             else:
                 questions = st.session_state.interview_questions['questions']
             
-            # Initialize live interview session
             interview_ui = InterviewUI()
             interview_ui.start_interview_session(
                 job_data=st.session_state.selected_job,
@@ -164,12 +152,12 @@ def _start_live_interview(interview_type: str, num_questions: int):
 
 
 def _render_review_mode_questions():
-    """Render generated questions in review mode."""
     interview_data = st.session_state.interview_questions
 
     st.markdown(f"""
-    <div style="background-color: {COLORS["secondary"]}; color: white; 
-    padding: 10px 15px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+    <div style="background: linear-gradient(135deg, {COLORS["tertiary"]}, {COLORS["accent"]}); 
+    color: white; padding: 10px 15px; border-radius: 8px; margin: 20px 0; 
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);">
     <h3 style="margin: 0; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
     {interview_data['type']} Questions (Review Mode)</h3>
     </div>

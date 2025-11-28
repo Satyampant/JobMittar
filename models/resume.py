@@ -1,4 +1,3 @@
-"""Resume data models with validation."""
 
 from typing import List, Optional
 from datetime import date
@@ -6,14 +5,12 @@ from pydantic import BaseModel, Field, field_validator, EmailStr
 
 
 class Skill(BaseModel):
-    """Individual skill with proficiency level."""
     name: str = Field(..., min_length=1, max_length=100)
     proficiency: Optional[str] = Field(None, pattern="^(Beginner|Intermediate|Advanced|Expert)$")
     years_experience: Optional[int] = Field(None, ge=0, le=50)
 
 
 class Education(BaseModel):
-    """Educational qualification details."""
     degree: str = Field(..., min_length=1)
     institution: str = Field(..., min_length=1)
     start_date: Optional[date] = None
@@ -29,7 +26,6 @@ class Education(BaseModel):
 
 
 class WorkExperience(BaseModel):
-    """Work experience entry."""
     company: str = Field(..., min_length=1)
     position: str = Field(..., min_length=1)
     start_date: date
@@ -39,7 +35,6 @@ class WorkExperience(BaseModel):
 
 
 class Resume(BaseModel):
-    """Complete resume structure."""
     name: str = Field(..., min_length=1, max_length=100)
     email: EmailStr
     phone: Optional[str] = Field(None, pattern=r'^\+?[\d\s\-\(\)]+$')
@@ -56,7 +51,6 @@ class Resume(BaseModel):
         return v
 
 class ResumeAnalysis(BaseModel):
-    """Resume quality analysis result."""
     overall_assessment: str = Field(..., min_length=20)
     strengths: List[str] = Field(default_factory=list, min_items=3)
     weaknesses: List[str] = Field(default_factory=list, min_items=3)

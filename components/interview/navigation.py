@@ -1,11 +1,8 @@
-"""Navigation buttons component - question traversal."""
-
 import streamlit as st
 from models.interview import InterviewSessionState
 
 
 class NavigationButtons:
-    """Renders navigation controls for interview session."""
     
     def render(
         self, 
@@ -14,7 +11,6 @@ class NavigationButtons:
         on_next: callable,
         on_finish: callable
     ):
-        """Render previous/next/finish buttons."""
         if not session:
             return
         

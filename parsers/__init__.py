@@ -1,4 +1,3 @@
-"""Resume parsing utilities using LLM-based extraction."""
 
 from .resume_extractor import extract_resume
 from .file_reader import read_resume_file

@@ -59,23 +59,23 @@ st.set_page_config(
 # Apply custom styling 
 apply_styling()
 
-# Application header with gradient 
+# Application header
 st.markdown(f"""
 <div style='text-align:center; padding: 2rem 0; 
-background: linear-gradient(135deg, {COLORS["primary"]}, {COLORS["secondary"]}, {COLORS["accent2"]}); 
-border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 6px 20px rgba(255, 184, 28, 0.4);'>
-    <h1 style='color: #1A1D23; font-size: 2.8rem; margin-bottom: 0.5rem; 
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); font-weight: 700;'>
+background: linear-gradient(135deg, {COLORS["secondary"]}, {COLORS["tertiary"]}, {COLORS["accent2"]}); 
+border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);'>
+    <h1 style='color: white; font-size: 2.8rem; margin-bottom: 0.5rem; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: 700;'>
     💼 A Smarter Way to Get Hired</h1>
-    <h5 style='color: #1A1D23; font-size: 1.2rem; margin-bottom: 0.5rem;'>
+    <h5 style='color: white; font-size: 1.2rem; margin-bottom: 0.5rem;'>
     Analyze your resume, find the right roles, and practice interviews — all in one place.</h5>
-    <p style='color: #1A1D23; font-size: 1.2rem; font-weight: 600; margin: 0.5rem 2rem; 
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);'>
-    <span style='background-color: rgba(0,0,0,0.1); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
+    <p style='color: white; font-size: 1.2rem; font-weight: 600; margin: 0.5rem 2rem; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);'>
+    <span style='background-color: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
     🚀 Targeted Job Discovery</span> 
-    <span style='background-color: rgba(0,0,0,0.1); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
+    <span style='background-color: rgba(255,184,28,0.3); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
     📝 Resume Power-Up</span> 
-    <span style='background-color: rgba(0,0,0,0.1); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
+    <span style='background-color: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; margin: 0 5px;'>
     🎙️ Interview preparation</span>
     </p>
 </div>
@@ -120,7 +120,7 @@ with tabs[3]:
 # Footer
 st.markdown("---")
 st.markdown(
-    f"""<div style='text-align: center; background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}); 
+    f"""<div style='text-align: center; background: linear-gradient(90deg, {COLORS["secondary"]}, {COLORS["tertiary"]}); 
     color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);'>
     <p style="margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">Professional Job Search Assistant | Built with Streamlit | © {datetime.now().year}</p>
     </div>""",

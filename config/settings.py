@@ -1,4 +1,3 @@
-"""Pydantic-based configuration with validation and environment support."""
 
 import os
 import yaml
@@ -35,7 +34,6 @@ class APIConfig(BaseModel):
 
 
 class Settings(BaseSettings):
-    """Main settings with environment variable support."""
     groq_api_key: str = Field(alias="GROQ_API_KEY")
     serpapi_api_key: str = Field(alias="SERPAPI_API_KEY")
     deepgram_api_key: str = Field(alias="DEEPGRAM_API_KEY")

@@ -1,7 +1,6 @@
 environment: dev
 
 prompts:
-  # Agent decision-making prompts (for autonomous agents)
   job_search_agent: |
     You are a job search specialist with access to external tools.
     
@@ -53,7 +52,6 @@ prompts:
     
     Return format: {"tool": "tool_name", "parameters": {...}}
 
-  # Execution prompts (for actual LLM calls)
   resume_extraction: |
     Extract ALL information from this resume into structured format.
     CRITICAL INSTRUCTIONS:

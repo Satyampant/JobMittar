@@ -1,4 +1,3 @@
-"""Pydantic models for type-safe data handling across the Job Search Assistant."""
 
 from .resume import Resume, Education, WorkExperience, Skill, ResumeAnalysis
 from .job import Job, JobRequirements, Company

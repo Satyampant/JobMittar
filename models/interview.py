@@ -1,4 +1,3 @@
-"""Interview preparation data models."""
 
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
@@ -6,14 +5,13 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class InterviewQuestion(BaseModel):
-    """Individual interview question."""
     question: str = Field(..., min_length=10)
     category: str = Field(default="General", pattern="^(Technical|Behavioral|Situational|General)$")
     difficulty: str = Field(default="Medium", pattern="^(Easy|Medium|Hard)$")
     suggested_answer: Optional[str] = None
     key_points: List[str] = Field(default_factory=list)
     
-    # For backward compatibility with UI (app.py expects 'tips' field)
+    # app.py expects 'tips' field
     @property
     def tips(self) -> str:
         """Convert key_points to tips string for UI."""
@@ -23,7 +21,6 @@ class InterviewQuestion(BaseModel):
 
 
 class InterviewResponse(BaseModel):
-    """User's response to interview question."""
     question_id: str
     response: str = Field(..., min_length=10)
     feedback: Optional[str] = None
@@ -32,7 +29,6 @@ class InterviewResponse(BaseModel):
 
 
 class Interview(BaseModel):
-    """Complete interview preparation session."""
     job_title: str = Field(..., min_length=1)
     company_name: str = Field(..., min_length=1)
     questions: List[InterviewQuestion] = Field(default_factory=list)
@@ -49,7 +45,6 @@ class Interview(BaseModel):
 
 
 class InterviewQuestionResponse(BaseModel):
-    """Real-time response to an interview question with audio and feedback."""
     question_id: int
     question_text: str
     audio_response_path: Optional[str] = None
@@ -62,14 +57,13 @@ class InterviewQuestionResponse(BaseModel):
     
     @property
     def time_taken_formatted(self) -> str:
-        """Format time taken as HH:MM:SS."""
+        """Formatting time taken as HH:MM:SS."""
         if self.time_taken_seconds:
             return str(timedelta(seconds=int(self.time_taken_seconds)))
         return "Not recorded"
 
 
 class InterviewFeedback(BaseModel):
-    """Structured feedback for interview response."""
     evaluation: str = Field(..., min_length=10)
     strengths: List[str] = Field(default_factory=list)
     weaknesses: List[str] = Field(default_factory=list)
@@ -78,7 +72,6 @@ class InterviewFeedback(BaseModel):
     accuracy_score: float = Field(..., ge=0.0, le=10.0)
     
     def to_formatted_string(self) -> str:
-        """Convert feedback to formatted string for display."""
         output = f"**Evaluation:**\n{self.evaluation}\n\n"
         
         if self.strengths:
@@ -100,7 +93,6 @@ class InterviewFeedback(BaseModel):
 
 
 class InterviewSessionState(BaseModel):
-    """State management for live interview session."""
     job_title: str
     company_name: str
     interview_type: str = Field(default="Technical Interview")
@@ -120,19 +112,16 @@ class InterviewSessionState(BaseModel):
     
     @property
     def progress_percentage(self) -> float:
-        """Calculate interview progress percentage."""
         if not self.questions:
             return 0.0
         return (len(self.responses) / len(self.questions)) * 100
     
     @property
     def average_confidence(self) -> Optional[float]:
-        """Calculate average confidence score."""
         scores = [r.confidence_score for r in self.responses if r.confidence_score]
         return sum(scores) / len(scores) if scores else None
     
     @property
     def average_accuracy(self) -> Optional[float]:
-        """Calculate average accuracy score."""
         scores = [r.accuracy_score for r in self.responses if r.accuracy_score]
         return sum(scores) / len(scores) if scores else None

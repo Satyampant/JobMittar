@@ -1,4 +1,3 @@
-"""Tool execution engine with configuration-driven settings."""
 
 from typing import Dict, Any
 import base64
@@ -9,11 +8,9 @@ from models.interview import Interview, InterviewQuestion, InterviewFeedback
 from models.skills import JobMatchAnalysis
 
 class ToolExecutionError(Exception):
-    """Custom exception for tool execution failures."""
     pass
 
 def execute_tool(tool_name: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
-    """Execute a tool with parameters and handle errors."""
     handlers = {
         "search_jobs": _execute_serp_search,
         "analyze_job_match": _execute_match_analysis,
@@ -35,7 +32,6 @@ def execute_tool(tool_name: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
     
 
 def _execute_serp_search(params: Dict[str, Any]) -> list:
-    """Execute SERP API job search using configuration."""
     import requests
     settings = get_settings()
     
@@ -54,21 +50,18 @@ def _execute_serp_search(params: Dict[str, Any]) -> list:
             for job in data.get("jobs_results", [])[:params.get("count", 5)]]
 
 def _execute_match_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
-    """Execute match analysis using config prompts and Instructor."""
     settings = get_settings()
     client = instructor.from_groq(
         Groq(api_key=settings.groq_api_key), 
         mode=instructor.Mode.JSON
     )
     
-    # Extract data
     resume_skills = params['resume_data'].get('skills', [])
     resume_experience = params['resume_data'].get('experience', [])
     job_title = params['job_data'].get('title', 'Unknown Position')
     job_description = params['job_data'].get('description', 'No description')
     job_requirements = params['job_data'].get('requirements', 'Not specified')
     
-    # Format prompt from config with variables
     prompt = settings.prompts.job_match_analysis.format(
         resume_skills=', '.join(resume_skills) if resume_skills else 'None listed',
         resume_experience='; '.join(resume_experience[:3]) if resume_experience else 'None listed',
@@ -92,7 +85,6 @@ def _execute_match_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
         raise ToolExecutionError(f"Match analysis failed: {str(e)}")
     
 def _execute_resume_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
-    """Execute resume quality analysis using Instructor."""
     from models.resume import ResumeAnalysis
     
     settings = get_settings()
@@ -103,7 +95,6 @@ def _execute_resume_analysis(params: Dict[str, Any]) -> Dict[str, Any]:
     
     resume = params['resume_data']
     
-    # Format resume data for prompt
     skills_str = ', '.join(resume.get('skills', [])[:10]) if resume.get('skills') else 'None listed'
     experience_str = '; '.join([exp[:100] for exp in resume.get('experience', [])[:3]]) if resume.get('experience') else 'None listed'
     education_str = '; '.join(resume.get('education', [])[:3]) if resume.get('education') else 'None listed'
@@ -144,14 +135,12 @@ def _execute_question_generation(params: Dict[str, Any]) -> list:
     company_name = job.get('company', 'Unknown Company')
     job_description = job.get('description', 'No description available')
     
-    # Get required skills if available
     required_skills = 'Not specified'
     if isinstance(job.get('requirements'), dict):
         skills = job['requirements'].get('required_skills', [])
         if skills:
             required_skills = ', '.join(skills)
     
-    # Format prompt from config with variables
     prompt = settings.prompts.interview_questions_generation.format(
         question_count=count,
         job_title=job_title,
@@ -169,7 +158,6 @@ def _execute_question_generation(params: Dict[str, Any]) -> list:
             temperature=settings.api.temperature
         )
         
-        # Return list of questions as dicts for compatibility with app.py
         return [
             {
                 'question': q.question,
@@ -186,7 +174,6 @@ def _execute_question_generation(params: Dict[str, Any]) -> list:
     
 
 def _execute_audio_generation(params: Dict[str, Any]) -> bytes:
-    """Execute audio generation using Groq TTS with config prompts."""
     from groq import Groq
     import tempfile
     import os
@@ -219,14 +206,12 @@ def _execute_audio_generation(params: Dict[str, Any]) -> bytes:
 
 
 def _execute_transcription(params: Dict[str, Any]) -> str:
-    """Execute audio transcription using Deepgram."""
     import requests
     import tempfile
     import os
     
     settings = get_settings()
     
-    # Decode base64 audio if provided as string
     audio_data = params.get('audio_bytes')
     if isinstance(audio_data, str):
         audio_data = base64.b64decode(audio_data)
@@ -281,7 +266,6 @@ def _execute_transcription(params: Dict[str, Any]) -> str:
 
 
 def _execute_feedback_generation(params: Dict[str, Any]) -> Dict[str, Any]:
-    """Execute feedback generation using Groq LLM with config prompts."""
     settings = get_settings()
     client = instructor.from_groq(
         Groq(api_key=settings.groq_api_key), 
@@ -292,7 +276,6 @@ def _execute_feedback_generation(params: Dict[str, Any]) -> Dict[str, Any]:
     question_type = params['question_type']
     candidate_response = params['candidate_response']
     
-    # Determine interviewer type
     interviewer_type_map = {
         'Technical': 'Technical Expert',
         'Behavioral': 'Manager or Team Lead',
@@ -301,7 +284,6 @@ def _execute_feedback_generation(params: Dict[str, Any]) -> Dict[str, Any]:
     }
     interviewer_type = interviewer_type_map.get(question_type, 'HR Recruiter')
     
-    # Use centralized prompt from config
     prompt = settings.prompts.interview_feedback_generation.format(
         interviewer_type=interviewer_type,
         question=question,
@@ -320,7 +302,6 @@ def _execute_feedback_generation(params: Dict[str, Any]) -> Dict[str, Any]:
         return feedback.model_dump()
         
     except Exception as e:
-        # Return fallback feedback
         return {
             "evaluation": f"Unable to generate detailed feedback: {str(e)}",
             "strengths": ["Response was recorded"],

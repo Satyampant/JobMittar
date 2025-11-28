@@ -1,4 +1,3 @@
-"""Final report component - displays interview summary."""
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -8,10 +7,8 @@ from ui_utils import COLORS
 
 
 class FinalReport:
-    """Renders comprehensive interview report with analytics."""
     
     def render(self, session: InterviewSessionState):
-        """Display final report with scores and download option."""
         if not session:
             return
         
@@ -32,10 +29,8 @@ class FinalReport:
             </div>
             """, unsafe_allow_html=True)
             
-            # Performance chart
             self._render_performance_chart(session)
         
-        # Detailed responses
         with st.expander("📋 Detailed Responses", expanded=False):
             for i, response in enumerate(session.responses, 1):
                 st.markdown(f"### Question {i}")
@@ -45,7 +40,6 @@ class FinalReport:
                 st.markdown(f"**Feedback:**\n{response.feedback}")
                 st.markdown("---")
         
-        # Download report
         self._render_download_button(session)
     
     def _render_performance_chart(self, session: InterviewSessionState):

@@ -1,25 +1,24 @@
-"""UI utilities for maintaining professional Gold/Amber theme with dark mode."""
 
 import streamlit as st
 
-# UPDATED Color palette - Gold/Amber Professional Theme
+# Color palette
 COLORS = {
-    # Primary palette - Gold/Amber based
-    "primary": "#FFB81C",      # Vibrant Gold (main accent)
-    "secondary": "#FFA500",    # Orange-Gold (secondary accent)
-    "tertiary": "#FFD700",     # Lighter Gold (tertiary accent)
+    # Primary palette - Gold accent (used sparingly)
+    "primary": "#FFB81C",      # Vibrant Gold (strategic accent only)
+    "secondary": "#6C63FF",    # Soft Purple (main secondary color)
+    "tertiary": "#4A90E2",     # Soft Blue (tertiary accent)
 
-    # Accent colors - Complementary warm tones
-    "accent": "#FF8C00",       # Dark Orange
-    "accent1": "#F4A460",      # Sandy Brown
-    "accent2": "#DAA520",      # Goldenrod
-    "accent3": "#FF8C00",      # Dark Orange (matches accent)
+    # Accent colors - Complementary cool tones
+    "accent": "#5B7C99",       # Steel Blue
+    "accent1": "#7B68EE",      # Medium Slate Blue
+    "accent2": "#20B2AA",      # Light Sea Green
+    "accent3": "#FF6B9D",      # Soft Pink
 
     # Functional colors - Status indicators
     "success": "#4CAF50",      # Green (keep for success)
     "warning": "#FF9800",      # Amber warning
     "error": "#F44336",        # Red (keep for errors)
-    "info": "#FFB81C",         # Gold for info (matches primary)
+    "info": "#4A90E2",         # Blue for info (changed from gold)
 
     # Background and text - Dark mode optimized
     "background": "#0E1117",   # Dark background
@@ -33,7 +32,6 @@ COLORS = {
 
 
 def apply_styling():
-    """Apply custom CSS styling with Gold/Amber theme."""
     st.markdown(f"""
     <style>
         /* Global font styling */
@@ -41,52 +39,50 @@ def apply_styling():
             font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
         }}
 
-        /* Main header styling - Gold gradient */
+        /* Main header styling - Purple to Blue gradient */
         h1, h2, .main-header {{
             color: white !important;
-            background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}) !important;
+            background: linear-gradient(135deg, {COLORS['secondary']}, {COLORS['tertiary']}) !important;
             padding: 20px !important;
             border-radius: 8px !important;
             margin-bottom: 20px !important;
             font-weight: bold !important;
-            box-shadow: 0 4px 12px rgba(255, 184, 28, 0.3) !important;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3) !important;
         }}
 
-        /* Gold header panels styling */
-        div[style*="background-color: {COLORS['primary']}"],
-        [data-testid="stForm"] h3,
-        .gold-header {{
-            color: #1A1D23 !important;  /* Dark text on gold background */
-            font-size: 1.2rem !important;
-            font-weight: bold !important;
-            text-shadow: none !important;
+        /* Gold accent panels (used sparingly) */
+        .gold-accent {{
+            color: #1A1D23 !important;
+            background: linear-gradient(135deg, {COLORS['primary']}, #FFA500) !important;
             padding: 15px !important;
             border-radius: 6px !important;
-            margin-bottom: 15px !important;
-            background-color: {COLORS['primary']} !important;
             box-shadow: 0 2px 8px rgba(255, 184, 28, 0.4) !important;
         }}
 
-        /* Fix for text in gold panels - use dark text for contrast */
-        div[style*="background-color: {COLORS['primary']}"] p,
-        div[style*="background-color: {COLORS['primary']}"] span,
-        div[style*="background-color: {COLORS['primary']}"] h3,
-        div[style*="background-color: {COLORS['primary']}"] h4,
-        div[style*="background-color: {COLORS['primary']}"] div {{
-            color: #1A1D23 !important;
+        /* Purple panels - new default for important sections */
+        div[style*="background-color: {COLORS['primary']}"],
+        [data-testid="stForm"] h3,
+        .purple-header {{
+            color: white !important;
+            font-size: 1.2rem !important;
             font-weight: bold !important;
+            padding: 15px !important;
+            border-radius: 6px !important;
+            margin-bottom: 15px !important;
+            background: linear-gradient(135deg, {COLORS['secondary']}, {COLORS['accent1']}) !important;
+            box-shadow: 0 2px 8px rgba(108, 99, 255, 0.4) !important;
         }}
 
-        /* Buttons styled with gold */
+        /* Buttons styled with purple gradient */
         .stButton>button,
         button[kind="primary"] {{
-            background-color: {COLORS["primary"]} !important;
-            color: #1A1D23 !important;
+            background: linear-gradient(135deg, {COLORS["secondary"]}, {COLORS["tertiary"]}) !important;
+            color: white !important;
             font-weight: bold !important;
             border-radius: 6px !important;
             padding: 0.6rem 1.2rem !important;
             border: none !important;
-            box-shadow: 0 4px 12px rgba(255, 184, 28, 0.4) !important;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.4) !important;
             transition: all 0.3s ease !important;
             width: 100% !important;
             font-size: 16px !important;
@@ -95,19 +91,19 @@ def apply_styling():
 
         .stButton>button:hover,
         button[kind="primary"]:hover {{
-            background-color: {COLORS["secondary"]} !important;
-            box-shadow: 0 6px 16px rgba(255, 184, 28, 0.6) !important;
+            background: linear-gradient(135deg, {COLORS["accent1"]}, {COLORS["secondary"]}) !important;
+            box-shadow: 0 6px 16px rgba(108, 99, 255, 0.6) !important;
             transform: translateY(-2px) !important;
         }}
 
-        /* Slider styling */
+        /* Slider styling - purple accent */
         .stSlider > div > div > div > div {{
-            background-color: {COLORS["primary"]} !important;
+            background-color: {COLORS["secondary"]} !important;
         }}
 
-        /* Progress bar */
+        /* Progress bar - gold kept for visual feedback */
         .stProgress > div > div > div {{
-            background-color: {COLORS["primary"]} !important;
+            background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}) !important;
         }}
 
         /* Tables */
@@ -120,10 +116,10 @@ def apply_styling():
             box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
         }}
 
-        /* Table headers - Gold theme */
+        /* Table headers - Blue gradient instead of gold */
         th, thead tr th {{
-            background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}) !important;
-            color: #1A1D23 !important;
+            background: linear-gradient(135deg, {COLORS['tertiary']}, {COLORS['accent']}) !important;
+            color: white !important;
             font-weight: bold !important;
             padding: 12px 8px !important;
             text-align: left !important;
@@ -143,7 +139,7 @@ def apply_styling():
             background-color: #262A34 !important;
         }}
 
-        /* Tab navigation with gold accents */
+        /* Tab navigation with purple/blue accents */
         div[data-baseweb="tab-list"] {{
             gap: 0 !important;
             background-color: {COLORS["card_bg"]} !important;
@@ -170,19 +166,19 @@ def apply_styling():
         }}
 
         div[data-baseweb="tab-list"] button[aria-selected="true"] {{
-            background: linear-gradient(135deg, {COLORS["primary"]}, {COLORS["secondary"]}) !important;
-            color: #1A1D23 !important;
+            background: linear-gradient(135deg, {COLORS["secondary"]}, {COLORS["tertiary"]}) !important;
+            color: white !important;
             border: none !important;
-            box-shadow: 0 4px 16px rgba(255, 184, 28, 0.5) !important;
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.5) !important;
             transform: translateY(-2px) !important;
         }}
 
         div[data-baseweb="tab-list"] button:hover:not([aria-selected="true"]) {{
             background-color: #363A44 !important;
-            border-color: {COLORS["primary"]} !important;
+            border-color: {COLORS["secondary"]} !important;
         }}
 
-        /* Input fields */
+        /* Input fields - subtle blue border on focus */
         .stTextInput > div > div > input,
         .stTextArea > div > div > textarea,
         .stSelectbox > div > div {{
@@ -194,8 +190,8 @@ def apply_styling():
 
         .stTextInput > div > div > input:focus,
         .stTextArea > div > div > textarea:focus {{
-            border-color: {COLORS['primary']} !important;
-            box-shadow: 0 0 0 2px rgba(255, 184, 28, 0.2) !important;
+            border-color: {COLORS['secondary']} !important;
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2) !important;
         }}
 
         /* Sidebar styling */
@@ -203,21 +199,21 @@ def apply_styling():
             background-color: {COLORS['card_bg']} !important;
         }}
 
-        /* Links with gold color */
+        /* Links with purple color */
         a {{
-            color: {COLORS['primary']} !important;
+            color: {COLORS['secondary']} !important;
             text-decoration: none !important;
         }}
 
         a:hover {{
-            color: {COLORS['secondary']} !important;
+            color: {COLORS['tertiary']} !important;
             text-decoration: underline !important;
         }}
 
-        /* Expander with gold accent */
+        /* Expander with purple accent */
         .streamlit-expanderHeader {{
             background-color: {COLORS['card_bg']} !important;
-            border-left: 3px solid {COLORS['primary']} !important;
+            border-left: 3px solid {COLORS['secondary']} !important;
         }}
 
         /* Success/Info/Warning boxes */
@@ -225,17 +221,16 @@ def apply_styling():
             border-left-width: 4px !important;
         }}
 
-        /* Info alert with gold */
+        /* Info alert with blue */
         div[data-baseweb="notification"][kind="info"] {{
-            background-color: rgba(255, 184, 28, 0.1) !important;
-            border-left-color: {COLORS['primary']} !important;
+            background-color: rgba(74, 144, 226, 0.1) !important;
+            border-left-color: {COLORS['tertiary']} !important;
         }}
     </style>
     """, unsafe_allow_html=True)
 
 
 def display_resume_analysis_summary(resume_data):
-    """Display AI-generated resume summary with Gold theme."""
     if not resume_data:
         st.warning("Resume data is not available.")
         return
@@ -248,13 +243,12 @@ def display_resume_analysis_summary(resume_data):
 
     st.subheader("Resume Analysis Summary")
     
-    # Overall Assessment with gold gradient
     if analysis.get("overall_assessment"):
         st.markdown(f"""
-        <div style="background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}); 
-        color: #1A1D23; padding: 20px; border-radius: 10px; margin-bottom: 20px; 
-        box-shadow: 0 4px 16px rgba(255, 184, 28, 0.3);">
-        <h4 style="margin: 0 0 10px 0; color: #1A1D23;">📊 Overall Assessment</h4>
+        <div style="background: linear-gradient(135deg, {COLORS['secondary']}, {COLORS['tertiary']}); 
+        color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; 
+        box-shadow: 0 4px 16px rgba(108, 99, 255, 0.3);">
+        <h4 style="margin: 0 0 10px 0; color: white;">📊 Overall Assessment</h4>
         <p style="margin: 0; line-height: 1.6; font-weight: 500;">{analysis['overall_assessment']}</p>
         </div>
         """, unsafe_allow_html=True)
@@ -262,7 +256,7 @@ def display_resume_analysis_summary(resume_data):
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">💪 Strengths</h4>""", 
+        st.markdown(f"""<h4 style="color: {COLORS['success']}; margin-bottom: 10px;">💪 Strengths</h4>""", 
                     unsafe_allow_html=True)
         strengths = analysis.get("strengths", [])
         
@@ -291,7 +285,7 @@ def display_resume_analysis_summary(resume_data):
             for weakness in weaknesses:
                 st.markdown(
                     f"""<div style="background: linear-gradient(135deg, {COLORS['warning']}, #FB8C00); 
-                    color: #1A1D23; padding: 12px; border-radius: 6px; margin-bottom: 10px; 
+                    color: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; 
                     font-weight: 500; box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);">
                     ⚠️ {weakness}</div>""", 
                     unsafe_allow_html=True
@@ -305,7 +299,6 @@ def display_resume_analysis_summary(resume_data):
 
 
 def display_extracted_information(resume_data):
-    """Display extracted resume info with Gold theme."""
     if not resume_data:
         st.warning("Resume data is not available.")
         return
@@ -315,26 +308,24 @@ def display_extracted_information(resume_data):
     info_col1, info_col2 = st.columns(2)
 
     with info_col1:
-        # Contact info with gold accent
-        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">📞 Contact Information</h4>""", 
+        st.markdown(f"""<h4 style="color: {COLORS['tertiary']}; margin-bottom: 10px;">📞 Contact Information</h4>""", 
                     unsafe_allow_html=True)
         contact_info = resume_data.get("contact_info", {})
         contact_html = f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
-        padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid {COLORS['primary']};">"""
+        padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid {COLORS['tertiary']};">"""
 
         if contact_info and (contact_info.get("email") or contact_info.get("phone")):
             if contact_info.get("email"):
-                contact_html += f"<p><strong style='color: {COLORS['primary']}'>Email:</strong> {contact_info['email']}</p>"
+                contact_html += f"<p><strong style='color: {COLORS['tertiary']}'>Email:</strong> {contact_info['email']}</p>"
             if contact_info.get("phone"):
-                contact_html += f"<p><strong style='color: {COLORS['primary']}'>Phone:</strong> {contact_info['phone']}</p>"
+                contact_html += f"<p><strong style='color: {COLORS['tertiary']}'>Phone:</strong> {contact_info['phone']}</p>"
         else:
             contact_html += "<p>No contact information detected.</p>"
 
         contact_html += "</div>"
         st.markdown(contact_html, unsafe_allow_html=True)
 
-        # Education with gold accent
-        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">🎓 Education</h4>""", 
+        st.markdown(f"""<h4 style="color: {COLORS['secondary']}; margin-bottom: 10px;">🎓 Education</h4>""", 
                     unsafe_allow_html=True)
         education = resume_data.get("education", [])
         education_html = f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
@@ -350,17 +341,24 @@ def display_extracted_information(resume_data):
         st.markdown(education_html, unsafe_allow_html=True)
 
     with info_col2:
-        # Skills with gold badges
         st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">🛠️ Skills</h4>""", 
                     unsafe_allow_html=True)
         skills = resume_data.get("skills", [])
 
         if skills:
             skills_html = """<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">"""
-            for skill in skills:
-                skills_html += f"""<div style="background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['secondary']}); 
-                color: #1A1D23; padding: 8px 14px; border-radius: 20px; font-weight: 600; 
-                margin-bottom: 8px; box-shadow: 0 2px 6px rgba(255, 184, 28, 0.3);">
+            colors = [
+                f"linear-gradient(135deg, {COLORS['primary']}, #FFA500)",
+                f"linear-gradient(135deg, {COLORS['secondary']}, {COLORS['accent1']})",
+                f"linear-gradient(135deg, {COLORS['tertiary']}, {COLORS['accent']})",
+                f"linear-gradient(135deg, {COLORS['accent2']}, #1E90FF)"
+            ]
+            for idx, skill in enumerate(skills):
+                color = colors[idx % len(colors)]
+                text_color = "white" if idx % 4 != 0 else "#1A1D23"
+                skills_html += f"""<div style="background: {color}; 
+                color: {text_color}; padding: 8px 14px; border-radius: 20px; font-weight: 600; 
+                margin-bottom: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);">
                 {skill}</div>"""
             skills_html += "</div>"
             st.markdown(skills_html, unsafe_allow_html=True)
@@ -371,14 +369,13 @@ def display_extracted_information(resume_data):
                 unsafe_allow_html=True
             )
 
-        # Experience with gold accent
-        st.markdown(f"""<h4 style="color: {COLORS['primary']}; margin-bottom: 10px;">💼 Experience</h4>""", 
+        st.markdown(f"""<h4 style="color: {COLORS['accent2']}; margin-bottom: 10px;">💼 Experience</h4>""", 
                     unsafe_allow_html=True)
         experience = resume_data.get("experience", [])
 
         if experience:
             exp_html = f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
-            padding: 15px; border-radius: 8px; border-left: 4px solid {COLORS['accent1']};">"""
+            padding: 15px; border-radius: 8px; border-left: 4px solid {COLORS['accent2']};">"""
             for exp in experience[:3]:
                 exp_html += f"<p>• {exp[:100]}...</p>"
             exp_html += "</div>"
@@ -392,15 +389,14 @@ def display_extracted_information(resume_data):
 
 
 def display_formatted_analysis(analysis):
-    """Display AI-generated formatted resume analysis with Gold theme."""
     if not analysis or not isinstance(analysis, dict):
         st.info("Detailed analysis is not available.")
         return
 
     section_configs = [
         ("content_improvements", "Content Improvements", COLORS['accent1'], "📝"),
-        ("format_suggestions", "Format Suggestions", COLORS['accent2'], "🎨"),
-        ("ats_optimization", "ATS Optimization", COLORS['secondary'], "🤖")
+        ("format_suggestions", "Format Suggestions", COLORS['tertiary'], "🎨"),
+        ("ats_optimization", "ATS Optimization", COLORS['accent2'], "🤖")
     ]
 
     for key, title, color, icon in section_configs:
@@ -409,16 +405,15 @@ def display_formatted_analysis(analysis):
             st.subheader(f"{icon} {title}")
             content = "\n".join(f"• {item}" for item in items)
             st.markdown(
-                f"""<div style='background: linear-gradient(135deg, {color}, {COLORS["primary"]}); 
-                color: #1A1D23; padding: 18px; border-radius: 8px; margin-top: 10px; 
+                f"""<div style='background: linear-gradient(135deg, {color}, {COLORS["secondary"]}); 
+                color: white; padding: 18px; border-radius: 8px; margin-top: 10px; 
                 font-size: 16px; line-height: 1.8; font-weight: 500; 
-                box-shadow: 0 4px 12px rgba(255, 184, 28, 0.3);'>{content}</div>""", 
+                box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);'>{content}</div>""", 
                 unsafe_allow_html=True
             )
 
 
 def format_job_description(description):
-    """Format job description with Gold theme."""
     if not description:
         return f"""<div style="background-color: {COLORS['card_bg']}; color: {COLORS['text_light']}; 
                 padding: 15px; border-radius: 8px; margin-top: 15px;">No description available</div>"""
@@ -428,7 +423,7 @@ def format_job_description(description):
     formatted_description = f"""
     <div style="background-color: {COLORS['card_bg']}; color: {COLORS['text']}; 
     padding: 20px; border-radius: 10px; margin-top: 15px; line-height: 1.6; 
-    font-size: 16px; border-left: 4px solid {COLORS['primary']}; 
+    font-size: 16px; border-left: 4px solid {COLORS['secondary']}; 
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
         {description}
     </div>

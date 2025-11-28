@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 
 class Company(BaseModel):
-    """Company information."""
     name: str = Field(..., min_length=1, max_length=200)
     location: Optional[str] = None
     industry: Optional[str] = None
@@ -14,7 +13,6 @@ class Company(BaseModel):
 
 
 class JobRequirements(BaseModel):
-    """Job requirements and qualifications."""
     required_skills: List[str] = Field(default_factory=list)
     preferred_skills: List[str] = Field(default_factory=list)
     experience_years: Optional[int] = Field(None, ge=0, le=50)
@@ -22,7 +20,6 @@ class JobRequirements(BaseModel):
 
 
 class Job(BaseModel):
-    """Job listing structure."""
     title: str = Field(..., min_length=1, max_length=200)
     company: Company
     description: str = Field(..., min_length=20)

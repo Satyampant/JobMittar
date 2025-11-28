@@ -1,4 +1,3 @@
-"""Saved Jobs tab handler."""
 
 import streamlit as st
 import pandas as pd
@@ -11,7 +10,6 @@ def render_saved_jobs_tab():
     """Render the Saved Jobs tab."""
     st.header("Saved Jobs")
 
-    # Reload saved jobs
     st.session_state.saved_jobs = load_saved_jobs()
 
     if not st.session_state.saved_jobs:
@@ -21,21 +19,19 @@ def render_saved_jobs_tab():
 
 
 def _render_empty_state():
-    """Render empty state when no jobs are saved."""
     st.info("You haven't saved any jobs yet.")
 
 
 def _render_saved_jobs_list():
-    """Render list of saved jobs."""
     st.markdown(f"""
-    <div style="background-color: {COLORS["primary"]}; color: white; 
-    padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+    <div style="background: linear-gradient(135deg, {COLORS["secondary"]}, {COLORS["tertiary"]}); 
+    color: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; 
+    box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);">
     <h3 style="margin: 0; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
     You have {len(st.session_state.saved_jobs)} saved jobs</h3>
     </div>
     """, unsafe_allow_html=True)
 
-    # Display saved jobs table
     saved_jobs_df = pd.DataFrame([
         {
             "Title": job.get("title", "Unknown"),

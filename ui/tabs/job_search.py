@@ -1,4 +1,3 @@
-"""Job Search tab handler."""
 
 import streamlit as st
 import pandas as pd
@@ -8,7 +7,6 @@ from ui_utils import format_job_description, COLORS
 from utils.job_storage import save_job_to_local, load_saved_jobs
 
 
-# Common job titles and locations
 COMMON_JOB_TITLES = [
     "Data Scientist", "Software Engineer", "Product Manager", "Data Analyst",
     "Machine Learning Engineer", "Frontend Developer", "Backend Developer",
@@ -32,7 +30,6 @@ def render_job_search_tab():
     """Render the Job Search tab."""
     st.header("Job Search")
 
-    # Search tabs
     search_tabs = st.tabs(["📄 Resume-Based Search", "🔍 Custom Search"])
 
     with search_tabs[0]:
@@ -41,13 +38,11 @@ def render_job_search_tab():
     with search_tabs[1]:
         _render_custom_search()
 
-    # Display job results
     if st.session_state.get("job_results"):
         _render_job_results()
 
 
 def _render_resume_based_search():
-    """Render resume-based search section."""
     if st.session_state.get("resume_data"):
         st.subheader("Find Jobs Matching Your Resume")
         
@@ -76,7 +71,6 @@ def _render_resume_based_search():
 
 
 def _execute_resume_based_search(location: str):
-    """Execute resume-based job search."""
     with st.spinner("Searching for jobs..."):
         try:
             # Extract keywords from resume
@@ -104,7 +98,6 @@ def _execute_resume_based_search(location: str):
 
 
 def _render_custom_search():
-    """Render custom job search section."""
     with st.form("job_search_form"):
         st.subheader("Search Criteria")
 
@@ -134,7 +127,6 @@ def _render_custom_search():
 
 
 def _execute_custom_search(keywords: str, location: str, platforms: list, job_count: int):
-    """Execute custom job search across platforms."""
     with st.spinner(f"Searching for {keywords} jobs in {location}..."):
         all_jobs = []
         for platform in platforms:
@@ -157,7 +149,6 @@ def _execute_custom_search(keywords: str, location: str, platforms: list, job_co
 
 
 def _render_job_results():
-    """Display job search results."""
     st.subheader(f"Job Results ({len(st.session_state.job_results)})")
 
     # Create dataframe for display
@@ -179,7 +170,6 @@ def _render_job_results():
 
 
 def _render_job_details():
-    """Render selected job details."""
     st.markdown("### Job Details")
     selected_index = st.selectbox(
         "Select a job to view details:",
@@ -194,11 +184,14 @@ def _render_job_details():
 
         # Job header
         st.markdown(f"""
-        <div style='background: linear-gradient(90deg, {COLORS["primary"]}, {COLORS["secondary"]}); 
-        padding: 1rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2);'>
-            <h3 style='color: white; margin: 0; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);'>
+        <div style='background: linear-gradient(90deg, {COLORS["secondary"]}, {COLORS["tertiary"]}); 
+        padding: 1rem; border-radius: 10px; margin-bottom: 1rem; 
+        box-shadow: 0 3px 10px rgba(108, 99, 255, 0.3);'>
+            <h3 style='color: white; margin: 0; font-weight: 600; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);'>
             {selected_job.get('title', 'Unknown')}</h3>
-            <p style='color: white; font-size: 1.1rem; margin: 0.5rem 0 0 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);'>
+            <p style='color: white; font-size: 1.1rem; margin: 0.5rem 0 0 0; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);'>
             {selected_job.get('company', 'Unknown')}</p>
         </div>
         """, unsafe_allow_html=True)
@@ -217,7 +210,6 @@ def _render_job_details():
 
 
 def _render_match_analysis(job):
-    """Render resume-job match analysis."""
     with st.expander("📊 Resume Match Analysis", expanded=True):
         with st.spinner("Analyzing match..."):
             try:
@@ -232,9 +224,11 @@ def _render_match_analysis(job):
 
                     st.markdown(f"""
                     <div style="text-align: center; margin: 20px 0;">
-                        <div style="background-color: {COLORS["primary"]}; display: inline-block; padding: 10px 20px; 
-                        border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-                            <span style="color: white; font-size: 1.5rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                        <div style="background: linear-gradient(135deg, {COLORS["primary"]}, #FFA500); 
+                        display: inline-block; padding: 10px 20px; border-radius: 20px; 
+                        box-shadow: 0 2px 10px rgba(255, 184, 28, 0.4);">
+                            <span style="color: #1A1D23; font-size: 1.5rem; font-weight: bold; 
+                            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
                             Match Score: {match_score}%</span>
                         </div>
                     </div>
@@ -251,7 +245,6 @@ def _render_match_analysis(job):
 
 
 def _render_job_actions(job):
-    """Render job action buttons."""
     col1, col2 = st.columns(2)
     
     with col1:

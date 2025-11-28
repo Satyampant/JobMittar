@@ -1,4 +1,3 @@
-"""Tool definitions for autonomous agent decision-making."""
 
 from .definitions import (
     search_jobs_tool,
